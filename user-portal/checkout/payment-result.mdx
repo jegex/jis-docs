@@ -1,0 +1,86 @@
+---
+title: "Payment Result"
+description: "Halaman hasil pembayaran: success, pending, error, dan redirect handler dari Midtrans"
+---
+
+Setelah user selesai atau menutup Snap popup, Midtrans redirect ke salah satu halaman berikut. Semuanya di-handle oleh `App\Http\Controllers\Payment\PaymentController`.
+
+## Routes
+
+| Route Name | Path (EN) | Path (ID) | Method | Deskripsi |
+| --- | --- | --- | --- | --- |
+| `payment.success` | `/payment/success` | `/id/pembayaran/sukses` | `success()` | Halaman sukses. |
+| `payment.pending` | `/payment/pending` | `/id/pembayaran/pending` | `pending()` | Menunggu konfirmasi bank / manual transfer. |
+| `payment.error` | `/payment/error` | `/id/pembayaran/gagal` | `error()` | Pembayaran gagal atau di-cancel. |
+| `payment.finish` | `/payment/finish` | `/id/pembayaran/finish` | `finishRedirect()` | Redirect handler setelah Snap ditutup (finish URL). |
+| `payment.unfinish` | `/payment/unfinish` | `/id/pembayaran/unfinish` | `unfinishRedirect()` | Redirect handler jika user tutup Snap tanpa bayar. |
+
+## Halaman: Success
+
+<Frame caption="Halaman pembayaran sukses">
+  {/* TODO: masukkan screenshot payment success */}
+</Frame>
+
+**Ditampilkan saat:** order status `paid`.
+
+**Konten:**
+
+- Konfirmasi pembayaran berhasil
+- Nomor order
+- Link ke **Downloads** untuk ambil file digital
+- Link ke **Order Detail**
+
+## Halaman: Pending
+
+<Frame caption="Halaman pembayaran pending">
+  {/* TODO: masukkan screenshot payment pending */}
+</Frame>
+
+**Ditampilkan saat:** order status `awaiting_payment` dengan metode yang perlu konfirmasi manual (bank transfer, e-wallet retry).
+
+**Konten:**
+
+- Instruksi pembayaran (nomor VA, dll)
+- Tips: cek email untuk detail
+- Countdown expiry
+
+## Halaman: Error
+
+<Frame caption="Halaman pembayaran gagal">
+  {/* TODO: masukkan screenshot payment error */}
+</Frame>
+
+**Ditampilkan saat:** order status `failed`, `expired`, atau user cancel di Snap.
+
+**Konten:**
+
+- Pesan gagal
+- Tombol coba lagi (redirect kembali ke checkout)
+
+## Redirect Handlers
+
+### `payment.finish`
+
+Dipanggil Midtrans setelah Snap window ditutup. Cek status order:
+
+- `paid` → redirect ke `payment.success`
+- `awaiting_payment` → redirect ke `payment.pending`
+- lainnya → redirect ke `payment.error`
+
+### `payment.unfinish`
+
+Dipanggil jika user tutup Snap tanpa menyelesaikan pembayaran. Redirect ke `payment.pending` atau `payment.error` tergantung status di database.
+
+## Payment Callback
+
+Webhook untuk update status order **bukan** ini. Callback ke:
+
+```text
+POST /api/payment/callback
+```
+
+Detail lengkap lihat [Payments](/features/payments).
+
+<Info>
+  Halaman result hanya untuk display. Status order yang otoritatif di-update lewat webhook, bukan lewat redirect URL (yang bisa dimanipulasi).
+</Info>

@@ -1,0 +1,81 @@
+---
+title: "Downloads"
+description: "Daftar file digital yang bisa didownload pelanggan setelah pembayaran sukses"
+---
+
+Halaman ini menampilkan semua file digital yang bisa didownload oleh pelanggan berdasarkan order yang sudah `paid`.
+
+## Route
+
+| Route Name | Path (EN) | Path (ID) | Component | Middleware |
+| --- | --- | --- | --- | --- |
+| `customer.downloads` | `/downloads` | `/id/downloads` | `App\Livewire\CustomerDownloads` | `auth`, `verified` |
+
+## Route Download File
+
+| Route Name | Path | Controller | Middleware |
+| --- | --- | --- | --- |
+| `payment.download` | `/download/{order:order_number}/{product}` | `App\Http\Controllers\Payment\DownloadController@download` | `auth` |
+
+<Info>
+  Route `/download/{order}/{product}` **tidak** ter-localize — URL sama di semua bahasa.
+</Info>
+
+## Screenshot
+
+<Frame caption="Halaman downloads dengan tombol per produk">
+  {/* TODO: masukkan screenshot downloads page */}
+</Frame>
+
+## Konten
+
+Menampilkan **order yang sudah paid** dengan produknya:
+
+```php
+Order::where('user_id', auth()->id())
+    ->paid()
+    ->with('items.product', 'items.product.media')
+    ->latest('paid_at')
+    ->get();
+```
+
+### Per Order
+
+- Tanggal paid (`paid_at`)
+- Order number
+- List produk yang dibeli dengan:
+  - Cover image
+  - Nama produk
+  - Tombol **Download**
+
+## Cara Kerja Download
+
+<Steps>
+  <Step title="User klik Download">
+    Livewire method `getDownloadUrl($orderId, $productId)` dipanggil.
+  </Step>
+  <Step title="Validasi ownership">
+    Method cek `Order` milik `auth()->id()` dan sudah `paid`. Jika tidak match, return `#`.
+  </Step>
+  <Step title="Generate URL">
+    `DownloadService::generateDownloadUrl($order, $product)` bikin URL dengan signed token / expiry.
+  </Step>
+  <Step title="User di-redirect ke download route">
+    `/download/{order_number}/{product}` di-hit. Controller stream file dari disk `local`.
+  </Step>
+</Steps>
+
+## Keamanan
+
+- Route butuh `auth` middleware.
+- Validasi `order.user_id === auth()->id()`.
+- Validasi `order.status === paid`.
+- File disimpan di disk `local` (bukan `public`), tidak bisa diakses langsung lewat URL.
+
+<Warning>
+  Jika user membuka URL download milik user lain, controller return 404. Tidak ada cara mendapatkan file yang bukan milik user.
+</Warning>
+
+<Tip>
+  Setelah pembayaran sukses, sistem otomatis kirim email dengan template `download_link` yang berisi shortcut ke halaman ini.
+</Tip>

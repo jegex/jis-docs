@@ -1,0 +1,94 @@
+---
+title: "Login & Register"
+description: "Halaman authentication: login manual, register, dan Google OAuth"
+---
+
+Authentication di JIS menggunakan **Laravel Fortify** untuk login manual \+ register, dan **Laravel Socialite** untuk Google OAuth.
+
+## Login Manual
+
+**Route:** `login` (path: `/login`)
+
+### Field
+
+| Field | Tipe | Keterangan |
+| --- | --- | --- |
+| `email` | Email | Email user. |
+| `password` | Password | Password user. |
+| `remember` | Checkbox | Remember me. |
+
+### Behavior
+
+- Sukses → redirect ke `/dashboard` (customer.dashboard) untuk user biasa, `/admin` untuk admin.
+- Gagal → error message dengan generic response (tidak leak apakah email exist).
+- Rate-limited: default Fortify (5 attempts per menit).
+
+## Register
+
+**Route:** `register` (path: `/register`)
+
+### Field
+
+| Field | Tipe | Keterangan |
+| --- | --- | --- |
+| `name` | Text | Nama user. |
+| `email` | Email | Email unik. |
+| `password` | Password | Min 8 karakter. |
+| `password_confirmation` | Password | Konfirmasi password. |
+
+### Behavior
+
+- User dibuat dengan `email_verified_at = null`.
+- Email verification link dikirim otomatis.
+- User harus verify email sebelum bisa checkout.
+
+## Google OAuth
+
+**Routes:**
+
+| Route Name | Path | Deskripsi |
+| --- | --- | --- |
+| `auth.google.redirect` | `/auth/google` | Redirect ke Google authorization. |
+| `auth.google.callback` | `/auth/google/callback` | Callback handler dari Google. |
+
+### Flow
+
+<Steps>
+  <Step title="User klik Sign in with Google">
+    Tombol tersedia di halaman login dan register.
+  </Step>
+  <Step title="Redirect ke Google">
+    User authorize aplikasi lewat Google account picker.
+  </Step>
+  <Step title="Callback">
+    Google redirect balik ke `/auth/google/callback` dengan authorization code.
+  </Step>
+  <Step title="User dibuat/di-match">
+    Jika email sudah ada di database, link akun. Jika belum, buat user baru dengan `email_verified_at = now()` (Google sudah verify email).
+  </Step>
+  <Step title="Auto-login">
+    User langsung login dan redirect ke dashboard.
+  </Step>
+</Steps>
+
+Untuk setup Google OAuth, lihat [Google OAuth Configuration](/configuration/google-oauth).
+
+## Email Verification
+
+User yang belum verify email tidak bisa akses route yang butuh `middleware('verified')`:
+
+- `/checkout/{product}`
+- `/dashboard`
+- `/downloads`
+- `/profile`
+- `/orders/{order}`
+
+**Route verifikasi:** menggunakan default Fortify (`/email/verify`, `/email/verify/{id}/{hash}`).
+
+## Password Reset
+
+**Routes:** default Fortify (`/forgot-password`, `/reset-password`).
+
+<Info>
+  Template email untuk verification, reset password, dan welcome bisa dikustomisasi di [Email Templates](/admin-panel/mail/email-templates).
+</Info>

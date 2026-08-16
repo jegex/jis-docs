@@ -18,115 +18,170 @@
         ]
       }
     ],
-    "global": {
-      "anchors": [
-        {
-          "anchor": "Documentation",
-          "href": "https://mintlify.com/docs",
-          "icon": "book-open-cover"
-        },
-        {
-          "anchor": "Blog",
-          "href": "https://mintlify.com/blog",
-          "icon": "newspaper"
-        }
-      ]
-    },
-    "groups": [
+    "tabs": [
       {
-        "group": "Getting Started",
-        "pages": [
-          "index",
-          "quickstart"
+        "tab": "Setup",
+        "icon": "rocket",
+        "groups": [
+          {
+            "group": "Getting Started",
+            "pages": [
+              "index",
+              "quickstart"
+            ]
+          },
+          {
+            "group": "Configuration",
+            "icon": "sliders",
+            "pages": [
+              "configuration/database",
+              "configuration/midtrans",
+              "configuration/google-oauth",
+              "configuration/email"
+            ]
+          },
+          {
+            "group": "Deployment",
+            "icon": "server",
+            "pages": [
+              "deployment/cpanel"
+            ]
+          }
         ]
       },
       {
-        "group": "Configuration",
-        "icon": "sliders",
-        "pages": [
-          "configuration/database",
-          "configuration/midtrans",
-          "configuration/google-oauth",
-          "configuration/email"
-        ]
-      },
-      {
-        "group": "Fitur",
-        "icon": "sparkles",
-        "pages": [
-          "features/overview",
-          "features/admin-panel",
-          "features/payments",
-          "features/multi-language"
-        ]
-      },
-      {
-        "group": "Deployment",
-        "icon": "server",
-        "pages": [
-          "deployment/cpanel"
-        ]
-      },
-      {
-        "group": "Development",
-        "icon": "code",
-        "pages": [
-          "development/commands",
-          "development/testing"
-        ]
-      },
-      {
-        "group": "Admin Panel",
+        "tab": "Admin Guide",
         "icon": "gauge-high",
-        "pages": [
-          "admin-panel/overview",
+        "groups": [
           {
-            "group": "E-commerce",
-            "icon": "cart-shopping",
+            "group": "Fitur",
+            "icon": "sparkles",
             "pages": [
-              "admin-panel/ecommerce/products",
-              "admin-panel/ecommerce/product-categories",
-              "admin-panel/ecommerce/orders",
-              "admin-panel/ecommerce/coupons",
-              "admin-panel/ecommerce/currencies"
+              "features/overview",
+              "features/admin-panel",
+              "features/payments",
+              "features/multi-language"
             ]
           },
           {
-            "group": "Konten",
-            "icon": "newspaper",
+            "group": "Admin Panel",
+            "icon": "gauge-high",
             "pages": [
-              "admin-panel/content/posts",
-              "admin-panel/content/categories",
-              "admin-panel/content/tags",
-              "admin-panel/content/pages",
-              "admin-panel/content/projects",
-              "admin-panel/content/menu-items"
+              "admin-panel/overview",
+              {
+                "group": "E-commerce",
+                "icon": "cart-shopping",
+                "pages": [
+                  "admin-panel/ecommerce/products",
+                  "admin-panel/ecommerce/product-categories",
+                  "admin-panel/ecommerce/orders",
+                  "admin-panel/ecommerce/coupons",
+                  "admin-panel/ecommerce/currencies"
+                ]
+              },
+              {
+                "group": "Konten",
+                "icon": "newspaper",
+                "pages": [
+                  "admin-panel/content/posts",
+                  "admin-panel/content/categories",
+                  "admin-panel/content/tags",
+                  "admin-panel/content/pages",
+                  "admin-panel/content/projects",
+                  "admin-panel/content/menu-items"
+                ]
+              },
+              {
+                "group": "User Management",
+                "icon": "users",
+                "pages": [
+                  "admin-panel/users/users",
+                  "admin-panel/users/admins",
+                  "admin-panel/users/invitations"
+                ]
+              },
+              {
+                "group": "Mail",
+                "icon": "envelope",
+                "pages": [
+                  "admin-panel/mail/email-templates",
+                  "admin-panel/mail/send-newsletter"
+                ]
+              },
+              {
+                "group": "Site Configuration",
+                "icon": "gear",
+                "pages": [
+                  "admin-panel/settings/settings",
+                  "admin-panel/settings/seo",
+                  "admin-panel/settings/homepage-builder"
+                ]
+              }
             ]
-          },
+          }
+        ]
+      },
+      {
+        "tab": "User Guide",
+        "icon": "user",
+        "groups": [
           {
-            "group": "User Management",
-            "icon": "users",
+            "group": "User Portal",
+            "icon": "user",
             "pages": [
-              "admin-panel/users/users",
-              "admin-panel/users/admins",
-              "admin-panel/users/invitations"
+              "user-portal/overview",
+              {
+                "group": "Publik",
+                "icon": "globe",
+                "pages": [
+                  "user-portal/public/homepage",
+                  "user-portal/public/product-catalog",
+                  "user-portal/public/product-detail",
+                  "user-portal/public/blog",
+                  "user-portal/public/static-pages",
+                  "user-portal/public/currency-switcher"
+                ]
+              },
+              {
+                "group": "Authentication",
+                "icon": "shield-halved",
+                "pages": [
+                  "user-portal/auth/authentication",
+                  "user-portal/auth/set-password"
+                ]
+              },
+              {
+                "group": "Checkout & Payment",
+                "icon": "credit-card",
+                "pages": [
+                  "user-portal/checkout/checkout",
+                  "user-portal/checkout/payment-result"
+                ]
+              },
+              {
+                "group": "Customer Area",
+                "icon": "user-gear",
+                "pages": [
+                  "user-portal/customer/dashboard",
+                  "user-portal/customer/downloads",
+                  "user-portal/customer/order-detail",
+                  "user-portal/customer/profile"
+                ]
+              }
             ]
-          },
+          }
+        ]
+      },
+      {
+        "tab": "Developer",
+        "icon": "code",
+        "groups": [
           {
-            "group": "Mail",
-            "icon": "envelope",
+            "group": "Development",
+            "icon": "code",
             "pages": [
-              "admin-panel/mail/email-templates",
-              "admin-panel/mail/send-newsletter"
-            ]
-          },
-          {
-            "group": "Site Configuration",
-            "icon": "gear",
-            "pages": [
-              "admin-panel/settings/settings",
-              "admin-panel/settings/seo",
-              "admin-panel/settings/homepage-builder"
+              "development/commands",
+              "development/testing"
             ]
           }
         ]
@@ -156,5 +211,9 @@
       "cursor",
       "vscode"
     ]
+  },
+  "appearance": {
+    "default": "dark",
+    "strict": true
   }
 }

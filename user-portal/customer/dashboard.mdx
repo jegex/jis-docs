@@ -1,0 +1,58 @@
+---
+title: "Customer Dashboard"
+description: "Halaman utama customer area dengan ringkasan order yang sudah dibayar"
+---
+
+Customer Dashboard adalah halaman utama customer area setelah login. Menampilkan ringkasan order pelanggan.
+
+## Route
+
+| Route Name | Path (EN) | Path (ID) | Component | Middleware |
+| --- | --- | --- | --- | --- |
+| `customer.dashboard` | `/dashboard` | `/id/dashboard` | `App\Livewire\CustomerDashboard` | `auth`, `verified` |
+
+## Screenshot
+
+<Frame caption="Customer dashboard dengan daftar order">
+  {/* TODO: masukkan screenshot customer dashboard */}
+</Frame>
+
+## Konten
+
+Menampilkan **order yang sudah paid** milik user login:
+
+```php
+Order::where('user_id', auth()->id())
+    ->paid()
+    ->with('items.product', 'items.product.media')
+    ->latest()
+    ->paginate(10);
+```
+
+### Data per Order
+
+- Order number
+- Tanggal order (`created_at`)
+- Total harga
+- Status (badge)
+- Item list dengan cover image
+- Link ke [Order Detail](/user-portal/order-detail)
+
+## Sidebar / Navigation
+
+Customer area biasanya punya sidebar dengan link:
+
+| Menu | URL |
+| --- | --- |
+| Dashboard | `/dashboard` |
+| Downloads | `/downloads` |
+| Profile | `/profile` |
+| Logout | `/logout` |
+
+## Layout
+
+Menggunakan `layouts.app` (layout customer dengan header/footer utama site).
+
+<Info>
+  Hanya order dengan status `paid` yang tampil di dashboard. Order dengan status `pending`, `awaiting_payment`, `failed`, atau `expired` tidak ditampilkan di sini.
+</Info>

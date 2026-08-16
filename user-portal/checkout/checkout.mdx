@@ -1,0 +1,105 @@
+---
+title: "Checkout"
+description: "Form checkout dengan apply kupon dan integrasi Midtrans Snap"
+---
+
+Halaman checkout adalah tempat user memfinalisasi pembelian produk digital. Menggunakan Livewire component `CheckoutForm` dan Midtrans Snap popup.
+
+## Route
+
+| Route Name | Path (EN) | Path (ID) | Component | Middleware |
+| --- | --- | --- | --- | --- |
+| `checkout.create` | `/checkout/{product}` | `/id/checkout/{product}` | `App\Livewire\CheckoutForm` | `auth`, `verified` |
+
+<Warning>
+  Route ini butuh **auth \+ verified**. Guest checkout hanya jika `config('checkout.allow_guest') = true` dan diatur khusus di CheckoutForm.
+</Warning>
+
+## Screenshot
+
+<Frame caption="Halaman checkout dengan ringkasan produk dan kupon">
+  {/* TODO: masukkan screenshot checkout */}
+</Frame>
+
+<Frame caption="Popup Midtrans Snap saat pembayaran">
+  {/* TODO: masukkan screenshot Midtrans Snap */}
+</Frame>
+
+## Fitur
+
+### Ringkasan Produk
+
+Menampilkan detail produk yang dibeli:
+
+- Cover image
+- Nama produk
+- Kategori
+- Harga (dalam currency default site)
+
+### Kupon
+
+| Field | Tipe | Keterangan |
+| --- | --- | --- |
+| `couponCode` | Text | Kode kupon yang di-input user. |
+
+**Behavior:**
+
+- Klik **Apply** → `CouponService::getValidationError()` cek validitas.
+- Jika valid: discount di-apply ke total, `appliedCode` di-set.
+- Jika invalid: error message inline (misal expired, max uses, wrong product).
+
+**Kondisi kupon di-reject:**
+
+- Kupon tidak ditemukan
+- `expires_at` sudah lewat
+- `usage_count >= max_uses` (jika `max_uses > 0`)
+- `applies_to = specific_product` dan produk tidak match
+
+### Total
+
+```text
+subtotal - discount = total
+```
+
+## Flow Checkout
+
+<Steps>
+  <Step title="User klik Buy di product detail">
+    Redirect ke `/checkout/{product}`. Middleware `auth` \+ `verified` dicek dulu.
+  </Step>
+  <Step title="Apply kupon (opsional)">
+    User isi kode kupon, klik Apply. Total di-update real-time via Livewire.
+  </Step>
+  <Step title="Klik Pay Now">
+    Component set `processing = true`, panggil `OrderService::createOrder()`:
+
+    - Buat record `Order` dengan status `pending`
+    - Buat `OrderItem` untuk produk
+    - Jika ada kupon, apply dan increment `usage_count`
+    - Convert total ke IDR untuk Midtrans
+    - Panggil Midtrans API untuk create Snap transaction
+    - Return `snap_token`
+  </Step>
+  <Step title="Snap popup terbuka">
+    Livewire dispatch event untuk trigger Snap popup dengan token. Status order berubah ke `creating_payment` → `awaiting_payment`.
+  </Step>
+  <Step title="User bayar">
+    User pilih payment method di Snap dan complete payment.
+  </Step>
+  <Step title="Callback">
+    Midtrans kirim webhook ke `/api/payment/callback`. Status order di-update ke `paid`, `failed`, atau `expired`.
+  </Step>
+  <Step title="Redirect">
+    Setelah Snap ditutup: redirect ke `payment.finish` atau `payment.unfinish` sesuai hasil.
+  </Step>
+</Steps>
+
+## Guest Checkout
+
+Jika `config('checkout.allow_guest') = true`, user tidak perlu login. Order dibuat dengan field:
+
+- `guest_email`
+- `guest_name`
+- `user_id = null`
+
+Detail flow pembayaran & callback lihat [Payments](/features/payments).

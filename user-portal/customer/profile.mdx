@@ -1,0 +1,66 @@
+---
+title: "Profile"
+description: "Edit profil pelanggan dan ganti password dari customer area"
+---
+
+Halaman profile memungkinkan pelanggan mengubah data akun mereka: nama, email, dan password. Menggunakan Laravel Fortify actions untuk validasi dan update.
+
+## Route
+
+| Route Name | Path (EN) | Path (ID) | Component | Middleware |
+| --- | --- | --- | --- | --- |
+| `customer.profile` | `/profile` | `/id/profile` | `App\Livewire\CustomerProfile` | `auth`, `verified` |
+
+## Screenshot
+
+<Frame caption="Halaman profile dengan section update info dan password">
+  {/* TODO: masukkan screenshot customer profile */}
+</Frame>
+
+## Section: Update Profile
+
+| Field | Tipe | Keterangan |
+| --- | --- | --- |
+| `name` | Text | Nama user. |
+| `email` | Email | Email user. Jika diubah, akan trigger re-verification. |
+
+**Action:** `App\Actions\Fortify\UpdateUserProfileInformation`
+
+Behavior:
+
+- Validasi standar Fortify.
+- Jika email berubah dan user implement `MustVerifyEmail`, `email_verified_at` di-reset dan verification email dikirim ulang.
+- Message sukses: **"Profile updated successfully."**
+
+## Section: Update Password
+
+| Field | Tipe | Keterangan |
+| --- | --- | --- |
+| `current_password` | Password | Password lama. Wajib. |
+| `password` | Password | Password baru. Min 8 karakter, mengikuti default password rule. |
+| `password_confirmation` | Password | Konfirmasi password baru. |
+
+**Action:** `App\Actions\Fortify\UpdateUserPassword`
+
+Behavior:
+
+- Validasi `current_password` match dengan hash di database.
+- Password baru di-hash dan disimpan.
+- Setelah sukses, field password direset kosong.
+- Message sukses: **"Password updated successfully."**
+
+<Warning>
+  Jika user register via **Google OAuth** dan belum pernah set password, field `current_password` mungkin butuh handling khusus. Cek implementasi `UpdateUserPassword` untuk detail.
+</Warning>
+
+## Validation Error
+
+Jika update gagal, `ValidationException` ditangkap dan error di-set ke error bag Livewire. User melihat error message inline di bawah field yang bermasalah.
+
+## Layout
+
+Menggunakan `layouts.app` (layout customer standar).
+
+<Tip>
+  Untuk field tambahan seperti timezone, locale, atau admin\_locale, edit lewat resource [Users](/admin-panel/users/users) di admin panel. Field-field itu tidak tersedia di halaman profile customer.
+</Tip>

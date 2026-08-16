@@ -1,0 +1,107 @@
+---
+title: "Overview"
+description: "Ringkasan halaman-halaman yang bisa diakses pengunjung dan pelanggan"
+---
+
+User Portal adalah bagian frontend aplikasi JIS yang diakses langsung oleh pengunjung dan pelanggan. Dibangun dengan **Livewire 4** dan mendukung multi-bahasa via `nielsnumbers/laravel-localizer`.
+
+## Halaman Publik
+
+<CardGroup cols={2}>
+  <Card title="Homepage" icon="house" href="/user-portal/homepage">
+    Landing page dinamis dengan blok yang bisa dikustomisasi.
+  </Card>
+
+  <Card title="Product Catalog" icon="grid" href="/user-portal/product-catalog">
+    Katalog produk dengan filter kategori dan pencarian.
+  </Card>
+
+  <Card title="Product Detail" icon="box-open" href="/user-portal/product-detail">
+    Detail produk dengan galeri, deskripsi, dan tombol beli.
+  </Card>
+
+  <Card title="Blog" icon="newspaper" href="/user-portal/blog">
+    Daftar artikel dan halaman detail post.
+  </Card>
+
+  <Card title="Static Pages" icon="file-lines" href="/user-portal/static-pages">
+    Halaman statis (tentang kami, kontak, kebijakan).
+  </Card>
+</CardGroup>
+
+## Authentication
+
+<CardGroup cols={2}>
+  <Card title="Login & Register" icon="right-to-bracket" href="/user-portal/authentication">
+    Login manual, register, dan Google OAuth.
+  </Card>
+
+  <Card title="Set Password (Invitation)" icon="key" href="/user-portal/set-password">
+    Halaman set password untuk user yang diundang admin.
+  </Card>
+</CardGroup>
+
+## Checkout & Payment
+
+<CardGroup cols={2}>
+  <Card title="Checkout" icon="credit-card" href="/user-portal/checkout">
+    Form checkout dengan kupon dan integrasi Midtrans Snap.
+  </Card>
+
+  <Card title="Payment Result" icon="receipt" href="/user-portal/payment-result">
+    Halaman success, pending, dan error setelah pembayaran.
+  </Card>
+</CardGroup>
+
+## Customer Area
+
+Halaman berikut hanya bisa diakses user yang sudah **login dan verified**.
+
+<CardGroup cols={2}>
+  <Card title="Dashboard" icon="gauge" href="/user-portal/customer-dashboard">
+    Ringkasan order pelanggan.
+  </Card>
+
+  <Card title="Downloads" icon="cloud-arrow-down" href="/user-portal/customer-downloads">
+    Daftar file digital yang bisa didownload.
+  </Card>
+
+  <Card title="Order Detail" icon="clipboard-list" href="/user-portal/order-detail">
+    Detail per order dengan riwayat pembayaran.
+  </Card>
+
+  <Card title="Profile" icon="user-pen" href="/user-portal/profile">
+    Edit profil dan ganti password.
+  </Card>
+</CardGroup>
+
+## Fitur Global
+
+<CardGroup cols={2}>
+  <Card title="Language Switcher" icon="language" href="/features/multi-language">
+    Switch bahasa via URL prefix atau dropdown.
+  </Card>
+
+  <Card title="Currency Switcher" icon="coins" href="/user-portal/currency-switcher">
+    Ganti mata uang untuk display harga.
+  </Card>
+</CardGroup>
+
+## Struktur URL (Localized)
+
+Semua halaman frontend menggunakan URL yang ditranslate. Contoh dengan default locale `en` dan alternate `id`:
+
+| Route Name | EN | ID |
+| --- | --- | --- |
+| `home` | `/` | `/id` |
+| `products.index` | `/products` | `/id/produk` |
+| `products.show` | `/products/{slug}` | `/id/produk/{slug}` |
+| `checkout.create` | `/checkout/{product}` | `/id/checkout/{product}` |
+| `blog.index` | `/blog` | `/id/blog` |
+| `blog.show` | `/blog/{slug}` | `/id/blog/{slug}` |
+| `pages.show` | `/{slug}` | `/id/{slug}` |
+| `customer.dashboard` | `/dashboard` | `/id/dashboard` |
+| `customer.downloads` | `/downloads` | `/id/downloads` |
+| `customer.profile` | `/profile` | `/id/profile` |
+
+URL segment per locale diatur di [Multi-language](/features/multi-language).

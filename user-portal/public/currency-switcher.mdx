@@ -1,0 +1,58 @@
+---
+title: "Currency Switcher"
+description: "Ganti mata uang untuk display harga di seluruh site"
+---
+
+Currency switcher memungkinkan pengunjung mengganti mata uang tampilan harga. Menggunakan endpoint dedicated yang menerima code currency dan menyimpannya di session.
+
+## Route
+
+| Route Name | Path | Controller |
+| --- | --- | --- |
+| `currency.switch` | `/currency/{currency:code}` | `App\Http\Controllers\CurrencyController` |
+
+<Info>
+  Route ini **tidak** ter-localize. Path tetap sama di semua bahasa.
+</Info>
+
+## Cara Kerja
+
+<Steps>
+  <Step title="User klik dropdown currency">
+    Di header atau footer, muncul daftar currency yang aktif (dari master [Currencies](/admin-panel/ecommerce/currencies)).
+  </Step>
+  <Step title="Klik currency yang diinginkan">
+    Browser navigate ke `/currency/{code}` (misal `/currency/USD`).
+  </Step>
+  <Step title="Session di-update">
+    Controller simpan currency code di session dan redirect kembali ke halaman sebelumnya.
+  </Step>
+  <Step title="Harga di-convert">
+    Semua harga di frontend otomatis di-convert menggunakan `exchange_rate` dari database.
+  </Step>
+</Steps>
+
+## Rumus Konversi
+
+```text
+harga_display = harga_base * exchange_rate_target
+```
+
+Dengan `harga_base` dalam currency default site. Contoh: default IDR, produk Rp 100.000, switch ke USD dengan `exchange_rate = 0.000063`:
+
+```text
+100000 * 0.000063 = $6.30
+```
+
+Decimal place mengikuti setting per currency.
+
+<Warning>
+  Currency switcher hanya untuk **display**. Semua pembayaran diproses ke Midtrans dalam **IDR**. Sistem otomatis convert kembali ke IDR sebelum submit ke Midtrans.
+</Warning>
+
+## Currency Aktif
+
+Currency aktif di simpan di:
+
+1. **Session** — untuk request selanjutnya dalam sesi yang sama.
+2. **Fallback** — currency dengan `is_default = true` jika session kosong.

@@ -1,0 +1,50 @@
+---
+title: "Static Pages"
+description: "Halaman statis (tentang kami, kontak, kebijakan privasi) yang di-manage lewat admin"
+---
+
+Halaman statis di-manage lewat resource [Pages](/admin-panel/content/pages) di admin panel dan bisa diakses lewat URL `/{slug}`.
+
+## Route
+
+| Route Name | Path (EN) | Path (ID) | Controller |
+| --- | --- | --- | --- |
+| `pages.show` | `/{slug}` | `/id/{slug}` | `App\Http\Controllers\PageController` |
+
+## Screenshot
+
+<Frame caption="Contoh halaman statis (Tentang Kami)">
+  {/* TODO: masukkan screenshot static page */}
+</Frame>
+
+## Konten
+
+- **Title** (translatable) — judul halaman
+- **Content** (translatable) — konten rich text dari admin
+
+## Contoh Slug Umum
+
+| Slug | URL EN | URL ID |
+| --- | --- | --- |
+| `about-us` | `/about-us` | `/id/tentang-kami` (tergantung translation slug) |
+| `contact` | `/contact` | `/id/kontak` |
+| `privacy-policy` | `/privacy-policy` | `/id/kebijakan-privasi` |
+| `terms` | `/terms` | `/id/syarat-ketentuan` |
+
+<Info>
+  Karena field `title` dan slug translatable, satu page bisa punya URL berbeda per bahasa.
+</Info>
+
+## SEO
+
+Meta template diatur di [SEO Settings](/admin-panel/settings/seo) tab Pages. Bisa di-override per page.
+
+**Variable template:** `%title%`, `%description%`, `%site_title%`, `%site_description%`
+
+<Warning>
+  Halaman dengan `is_published = false` return 404 saat diakses lewat URL.
+</Warning>
+
+## Menambahkan ke Menu
+
+Setelah page dibuat, tambahkan ke menu navigasi lewat [Menu Items](/admin-panel/content/menu-items). Gunakan **Type: Model** dengan `menuable_type = Page` untuk auto-linking.

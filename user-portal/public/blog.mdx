@@ -1,0 +1,54 @@
+---
+title: "Blog"
+description: "Daftar artikel dan halaman detail post dengan kategori dan author"
+---
+
+Blog menampilkan artikel yang di-manage di admin panel [Posts](/admin-panel/content/posts).
+
+## Routes
+
+| Route Name | Path (EN) | Path (ID) | Component/Controller |
+| --- | --- | --- | --- |
+| `blog.index` | `/blog` | `/id/blog` | `App\Livewire\BlogList` |
+| `blog.show` | `/blog/{slug}` | `/id/blog/{slug}` | `App\Http\Controllers\BlogController@show` |
+
+## Screenshot
+
+<Frame caption="Daftar artikel blog">
+  {/* TODO: masukkan screenshot blog list */}
+</Frame>
+
+<Frame caption="Halaman detail artikel">
+  {/* TODO: masukkan screenshot blog detail */}
+</Frame>
+
+## Blog List
+
+Menampilkan artikel yang `is_published = true` dan `published_at <= now()`.
+
+**Fitur:**
+
+- Kartu artikel dengan featured image, judul, excerpt, kategori, author, dan tanggal publish
+- Filter kategori
+- Paginasi (default `posts_per_page = 9`, diatur di [Settings](/admin-panel/settings/settings))
+- Sort by `published_at desc`
+
+## Blog Detail
+
+Menampilkan konten lengkap satu artikel:
+
+- Featured image
+- Judul (translatable)
+- Konten rich text (translatable)
+- Kategori, author, tanggal publish
+- Related posts (opsional, tergantung view)
+
+## SEO
+
+Meta template diatur di [SEO Settings](/admin-panel/settings/seo) tab Posts. Bisa di-override per post.
+
+**Variable template:** `%title%`, `%excerpt%`, `%description%`, `%author%`, `%category%`, `%published_at%`, `%site_title%`, `%site_description%`
+
+<Info>
+  Post yang `published_at` di masa depan tidak muncul di list dan return 404 di halaman detail sampai tanggal tersebut tercapai.
+</Info>

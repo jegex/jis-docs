@@ -1,0 +1,45 @@
+---
+title: "Homepage"
+description: "Landing page dinamis dengan blok yang dikonfigurasi via Homepage Builder"
+---
+
+Homepage adalah landing page utama site. Konten diambil dari setting `homepage_blocks` yang di-manage lewat [Homepage Builder](/admin-panel/settings/homepage-builder) di admin panel.
+
+## Route
+
+| Route Name | Path (EN) | Path (ID) | Controller |
+| --- | --- | --- | --- |
+| `home` | `/` | `/id` | `App\Http\Controllers\HomeController` |
+
+## Screenshot
+
+<Frame caption="Homepage frontend">
+  {/* TODO: masukkan screenshot homepage */}
+</Frame>
+
+## Blok yang Ditampilkan
+
+Blok yang di-render otomatis mengikuti urutan dan konfigurasi di **Homepage Builder**. Hanya blok dengan `is_active = true` yang di-render.
+
+Blok yang tersedia:
+
+- **Hero** — banner utama dengan CTA
+- **Stats** — statistik dengan icon dan nilai
+- **Featured** — featured services / highlight
+- **Services** — daftar layanan
+- **Projects** — portfolio project
+- **Featured Products** — produk unggulan
+- **Latest Posts** — artikel terbaru
+- **CTA** — call-to-action section
+- **Testimonials** — testimoni pelanggan
+- **Partners** — logo partner
+
+Detail field per blok lihat [Homepage Builder](/admin-panel/settings/homepage-builder).
+
+## Meta & SEO
+
+Meta title dan description homepage diatur di [SEO Settings](/admin-panel/settings/seo) tab Homepage. Variable yang tersedia: `%site_title%`, `%site_description%`.
+
+<Tip>
+  Karena blok homepage translatable, homepage otomatis menampilkan konten sesuai bahasa aktif pengunjung.
+</Tip>

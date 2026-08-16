@@ -1,0 +1,78 @@
+---
+title: "Order Detail"
+description: "Halaman detail per order dengan item list dan riwayat pembayaran"
+---
+
+Halaman detail order menampilkan semua informasi dari satu order milik user login, termasuk item, payment log, dan currency yang dipakai.
+
+## Route
+
+| Route Name | Path (EN) | Path (ID) | Component | Middleware |
+| --- | --- | --- | --- | --- |
+| `customer.order.show` | `/orders/{order}` | `/id/orders/{order}` | `App\Livewire\OrderDetail` | `auth`, `verified` |
+
+## Screenshot
+
+<Frame caption="Halaman detail order">
+  {/* TODO: masukkan screenshot order detail */}
+</Frame>
+
+## Data yang Dimuat
+
+Di `mount()`, component load relasi:
+
+```php
+$order->load('items.product.media', 'payments', 'currency');
+```
+
+### Header Order
+
+- Order number
+- Tanggal order (`created_at`)
+- Status (badge dengan warna sesuai enum)
+- Currency yang dipakai
+
+### Items
+
+Untuk setiap `OrderItem`:
+
+- Cover image produk
+- Nama produk
+- Harga per item
+- Subtotal item
+
+### Ringkasan Harga
+
+| Field | Keterangan |
+| --- | --- |
+| Subtotal | Sebelum diskon |
+| Discount | Nominal potongan kupon (dengan kode kupon) |
+| Total | Total akhir yang dibayar |
+
+### Payment Log
+
+Untuk setiap `Payment` (relation):
+
+- Transaction ID Midtrans
+- Status callback
+- Waktu callback (`created_at`)
+- Metode pembayaran (dari payload)
+
+### Actions
+
+- **Download** (jika status `paid`) → link ke halaman [Downloads](/user-portal/customer-downloads)
+- **Retry Payment** (jika status `failed` atau `expired`) → redirect ke checkout ulang
+
+## Security
+
+```php
+if ((int) $order->user_id !== (int) auth()->id()) {
+    abort(404);
+}
+```
+
+User hanya bisa lihat order miliknya sendiri. Order milik user lain return **404** (bukan 403, untuk hindari leak keberadaan order).
+
+<Warning>
+  Guest checkout (jika enabled) menghasilkan order dengan `user_id = null`. Order guest tidak bisa diakses lewat halaman ini karena butuh auth. Guest hanya dapat konfirmasi lewat email.
+</Warning>

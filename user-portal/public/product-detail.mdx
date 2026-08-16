@@ -1,0 +1,44 @@
+---
+title: "Product Detail"
+description: "Halaman detail produk dengan galeri, deskripsi lengkap, dan tombol beli"
+---
+
+Halaman detail produk menampilkan informasi lengkap satu produk, galeri gambar, dan tombol untuk melanjutkan ke checkout.
+
+## Route
+
+| Route Name | Path (EN) | Path (ID) | Component |
+| --- | --- | --- | --- |
+| `products.show` | `/products/{slug}` | `/id/produk/{slug}` | `App\Livewire\ProductDetail` |
+
+## Screenshot
+
+<Frame caption="Halaman detail produk">
+  {/* TODO: masukkan screenshot product detail */}
+</Frame>
+
+## Konten yang Ditampilkan
+
+- **Cover image** \+ galeri thumbnail (dari Spatie Media)
+- **Nama produk** (translatable)
+- **Short description** — ringkasan singkat
+- **Description** — deskripsi lengkap dengan rich formatting
+- **Kategori** — link ke kategori produk
+- **Harga** — dengan simbol currency aktif
+- **Tombol Beli** — redirect ke [Checkout](/user-portal/checkout)
+
+## Behavior Tombol Beli
+
+- Jika user **belum login** dan `checkout.allow_guest = false`: redirect ke halaman login.
+- Jika user **belum verify email**: redirect ke halaman verifikasi.
+- Jika user **sudah login dan verified**: langsung ke checkout.
+
+## SEO
+
+Meta title & description mengikuti template di [SEO Settings](/admin-panel/settings/seo) tab Products, atau bisa di-override per produk lewat field SEO di [Products](/admin-panel/ecommerce/products).
+
+**Variable template:** `%title%`, `%short_description%`, `%description%`, `%category%`, `%site_title%`, `%site_description%`
+
+<Warning>
+  Produk dengan `is_published = false` akan return 404 saat diakses lewat URL detail.
+</Warning>

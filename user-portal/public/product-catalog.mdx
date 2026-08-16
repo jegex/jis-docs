@@ -1,0 +1,38 @@
+---
+title: "Product Catalog"
+description: "Katalog produk digital dengan filter kategori dan paginasi"
+---
+
+Halaman katalog menampilkan semua produk yang `is_published = true` dengan filter kategori dan paginasi.
+
+## Route
+
+| Route Name | Path (EN) | Path (ID) | Component |
+| --- | --- | --- | --- |
+| `products.index` | `/products` | `/id/produk` | `App\Livewire\ProductList` |
+
+## Screenshot
+
+<Frame caption="Katalog produk dengan filter">
+  {/* TODO: masukkan screenshot product catalog */}
+</Frame>
+
+## Fitur
+
+- **Grid produk** — kartu produk dengan cover, nama, kategori, dan harga.
+- **Filter kategori** — sidebar/dropdown pilihan kategori produk.
+- **Pencarian** — search bar untuk cari produk berdasarkan nama.
+- **Paginasi** — jumlah produk per halaman diatur di [Settings](/admin-panel/settings/settings) → Collection → `products_per_page` (default 9).
+- **Harga per currency** — mengikuti currency aktif user (lihat [Currency Switcher](/user-portal/currency-switcher)).
+
+## Data yang Ditampilkan
+
+- Cover image dari Spatie Media
+- Nama produk (translatable)
+- Kategori
+- Harga dengan simbol currency aktif
+- Link ke halaman detail produk
+
+<Info>
+  Hanya produk dengan `is_published = true` yang muncul di katalog. Produk draft tetap tersimpan di database tapi tidak tampil di frontend.
+</Info>
