@@ -185,6 +185,23 @@
             ]
           }
         ]
+      },
+      {
+        "tab": "Reference",
+        "icon": "book-open",
+        "groups": [
+          {
+            "group": "Reference",
+            "icon": "book-open",
+            "pages": [
+              "reference/overview",
+              "reference/enums",
+              "reference/environment-variables",
+              "reference/api",
+              "reference/permissions"
+            ]
+          }
+        ]
       }
     ]
   },

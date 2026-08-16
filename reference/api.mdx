@@ -1,0 +1,149 @@
+---
+title: "API & Webhook"
+description: "Referensi endpoint API dan webhook Midtrans yang di-expose aplikasi"
+---
+
+Aplikasi JIS meng-expose sejumlah endpoint API untuk webhook Midtrans dan integrasi eksternal. Semua endpoint ada di `routes/api.php`.
+
+## Base URL
+
+```text
+https://domainmu.com/api
+```
+
+## Payment Webhook
+
+Endpoint ini di-hit oleh **server Midtrans** (server-to-server), bukan browser user. Konfigurasi URL webhook di Midtrans Dashboard → Settings → Configuration.
+
+### POST /api/payment/callback
+
+Webhook utama untuk notifikasi status transaksi.
+
+**Route name:** `payment.callback` · **Handler:** `PaymentController@callback`
+
+#### Request Body (Midtrans Payload)
+
+Midtrans mengirim JSON body dengan struktur:
+
+```json
+{
+  "order_id": "ORDER-XXX",
+  "transaction_id": "midtrans-transaction-uuid",
+  "transaction_status": "settlement",
+  "fraud_status": "accept",
+  "payment_type": "bank_transfer",
+  "gross_amount": "100000.00",
+  "signature_key": "sha512-hash",
+  "status_code": "200"
+}
+```
+
+#### Validasi
+
+Controller memvalidasi:
+
+1. **Signature key** — SHA-512 hash dari `order_id + status_code + gross_amount + server_key`.
+2. **Order prefix** — `order_id` harus diawali `ORDER-`.
+3. **Order exists** — record `Payment` dengan `gateway_transaction_id = order_id` harus ada.
+
+Jika validasi gagal, controller tetap return `200 OK` (Midtrans best practice) tapi log warning.
+
+#### Transaction Status Mapping
+
+| Midtrans `transaction_status` | Fraud Status | Action |
+| --- | --- | --- |
+| `settlement` | any | Mark order sebagai `Paid`, dispatch `PaymentSuccess` event. |
+| `capture` | `accept` | Mark order sebagai `Paid`, dispatch `PaymentSuccess` event. |
+| `capture` | `deny` / `challenge` | Tidak diproses (menunggu review). |
+| `deny` | any | Mark order sebagai `Failed`. |
+| `cancel` | any | Mark order sebagai `Failed`. |
+| `expire` | any | Mark order sebagai `Failed`. |
+| `failure` | any | Mark order sebagai `Failed`. |
+| `pending` | any | Order tetap di `AwaitingPayment`. |
+
+<Warning>
+  Order yang sudah `Paid` **tidak** akan di-downgrade ke `Failed` walau ada callback failure. Ini mencegah race condition.
+</Warning>
+
+#### Response
+
+| Kondisi | Response |
+| --- | --- |
+| Success (processed) | `200 OK` dengan body `"OK"` |
+| Signature invalid | `200 OK` (log warning) |
+| Order not found | `200 OK` (log warning) |
+| Non-order webhook | `200 OK` (skip) |
+
+<Info>
+  Selalu return `200`. Midtrans akan retry webhook jika response non-200, yang bisa menyebabkan duplicate processing.
+</Info>
+
+#### Side Effects Saat Order Paid
+
+1. `Order.status` update ke `Paid`.
+2. `Order.paid_at` di-set ke `now()`.
+3. Event `PaymentSuccess` di-dispatch. Listener akan:
+   - Kirim email `order_confirmation` ke customer.
+   - Kirim email `download_link` ke customer.
+
+### POST /api/payment/recurring-callback
+
+**Route name:** `payment.recurring` · **Handler:** `PaymentController@recurringCallback`
+
+Webhook untuk recurring payment (subscription). Delegate ke `handleCallback()` yang sama dengan `/callback`.
+
+### POST /api/payment/pay-account-callback
+
+**Route name:** `payment.pay-account` · **Handler:** `PaymentController@payAccountCallback`
+
+Webhook untuk pay-account (tokenized card). Delegate ke `handleCallback()` yang sama.
+
+## Testing Webhook Lokal
+
+Untuk test webhook di localhost, gunakan tunneling:
+
+<CodeGroup>
+
+```bash Cloudflared
+cloudflared tunnel --url http://localhost:8000
+```
+
+```bash ngrok
+ngrok http 8000
+```
+
+</CodeGroup>
+
+Daftarkan URL tunnel di **Midtrans Dashboard → Settings → Configuration → Payment Notification URL**:
+
+```text
+https://your-tunnel.trycloudflare.com/api/payment/callback
+```
+
+## Contoh Test Callback
+
+Simulasi callback di sandbox:
+
+```bash
+curl -X POST https://your-domain.com/api/payment/callback \
+  -H "Content-Type: application/json" \
+  -d '{
+    "order_id": "ORDER-2025-0001",
+    "transaction_id": "abc-123",
+    "transaction_status": "settlement",
+    "fraud_status": "accept",
+    "gross_amount": "100000.00",
+    "status_code": "200",
+    "signature_key": "<sha512-hash>"
+  }'
+```
+
+Lihat [Payments](/features/payments) untuk detail flow.
+
+## Rate Limiting
+
+Webhook endpoint **tidak** di-rate-limit (Midtrans butuh retry bebas). Rate limiting global Laravel tetap berlaku via `ThrottleRequests` middleware default.
+
+## CSRF
+
+Route di `api.php` **tidak** butuh CSRF token (stateless). Route di `web.php` yang POST tetap butuh CSRF.

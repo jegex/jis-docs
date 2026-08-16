@@ -1,0 +1,101 @@
+---
+title: "Enums"
+description: "Referensi lengkap semua enum yang dipakai di aplikasi"
+---
+
+Semua enum di JIS berada di namespace `App\Enums`. Enum yang diimplement `HasColor` / `HasLabel` otomatis punya badge di Filament.
+
+## OrderStatus
+
+**Namespace:** `App\Enums\OrderStatus` · **Implements:** `HasColor`, `HasLabel`
+
+| Case | Value | Color | Deskripsi |
+| --- | --- | --- | --- |
+| `Pending` | `pending` | warning | Order baru dibuat, belum ada aksi pembayaran. |
+| `CreatingPayment` | `creating_payment` | gray | Sistem sedang membuat transaction Midtrans. |
+| `AwaitingPayment` | `awaiting_payment` | warning | Snap popup sudah muncul, menunggu pelanggan bayar. |
+| `Paid` | `paid` | success | Pembayaran sukses, file digital bisa didownload. |
+| `Failed` | `failed` | danger | Pembayaran gagal (deny/cancel/failure). |
+| `Expired` | `expired` | gray | Order kadaluwarsa (tidak dibayar dalam batas waktu). |
+| `Refunded` | `refunded` | info | Order di-refund. |
+
+**Query scope:** `Order::paid()` filter status = `Paid`.
+
+## PaymentStatus
+
+**Namespace:** `App\Enums\PaymentStatus` · **Implements:** `HasColor`, `HasLabel`
+
+| Case | Value | Color |
+| --- | --- | --- |
+| `Pending` | `pending` | warning |
+| `Success` | `success` | success |
+| `Failed` | `failed` | danger |
+
+Digunakan di tabel `payments` untuk status per payment log entry.
+
+## CouponType
+
+**Namespace:** `App\Enums\CouponType`
+
+| Case | Value | Deskripsi |
+| --- | --- | --- |
+| `Fixed` | `fixed` | Diskon nominal (misal potongan Rp 50.000). |
+| `Percentage` | `percentage` | Diskon persentase (misal 10% dari subtotal). |
+
+## CouponAppliesTo
+
+**Namespace:** `App\Enums\CouponAppliesTo`
+
+| Case | Value | Deskripsi |
+| --- | --- | --- |
+| `All` | `all` | Kupon berlaku untuk semua produk. |
+| `SpecificProduct` | `specific_product` | Kupon hanya untuk produk tertentu (`product_id` wajib diisi). |
+
+## CategoryType
+
+**Namespace:** `App\Enums\CategoryType`
+
+| Case | Value | Color | Deskripsi |
+| --- | --- | --- | --- |
+| `Post` | `post` | info | Kategori untuk artikel blog. |
+| `Product` | `product` | success | Kategori untuk produk digital. |
+| `Project` | `project` | warning | Kategori untuk project portfolio. |
+
+Satu tabel `categories` dipakai untuk semua tipe. Slug unik hanya dalam scope per `type`.
+
+## EmailTemplateType
+
+**Namespace:** `App\Enums\EmailTemplateType`
+
+| Case | Value | Kapan Dikirim |
+| --- | --- | --- |
+| `Welcome` | `welcome` | Setelah user register / verify email. |
+| `OrderConfirmation` | `order_confirmation` | Setelah pembayaran sukses (`OrderStatus::Paid`). |
+| `DownloadLink` | `download_link` | Setelah pembayaran sukses, berisi shortcut download. |
+| `Newsletter` | `newsletter` | Manual dari [Send Newsletter](/admin-panel/mail/send-newsletter). |
+| `PasswordReset` | `password_reset` | User request reset password. |
+| `EmailVerification` | `email_verification` | Setelah register, untuk verifikasi email. |
+| `AdminInvitation` | `admin_invitation` | Admin invite user baru via [Invitations](/admin-panel/users/invitations). |
+
+Lihat [Email Template Variables](/admin-panel/mail/email-templates) untuk daftar variable per type.
+
+## MenuItemType (Package)
+
+**Namespace:** `Biostate\FilamentMenuBuilder\Enums\MenuItemType`
+
+| Value | Deskripsi |
+| --- | --- |
+| `link` | URL manual (absolut atau relatif). |
+| `route` | Named route Laravel dengan parameter opsional. |
+| `model` | Link ke Eloquent model (butuh config `filament-menu-builder.models`). |
+
+## MenuItemTarget (Package)
+
+**Namespace:** `Biostate\FilamentMenuBuilder\Enums\MenuItemTarget`
+
+| Value | Deskripsi |
+| --- | --- |
+| `_self` | Buka di tab yang sama (default). |
+| `_blank` | Buka di tab baru. |
+| `_parent` | Buka di parent frame. |
+| `_top` | Buka di full window. |

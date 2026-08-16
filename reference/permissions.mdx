@@ -1,0 +1,198 @@
+---
+title: "Permissions & Roles"
+description: "Referensi permission Spatie dan role default yang tersedia"
+---
+
+JIS menggunakan [Spatie Laravel Permission](https://spatie.be/docs/laravel-permission) untuk role & permission. Permission auto-generate dari Filament resource lewat package **guardian** (`php artisan guardian:sync`).
+
+## Format Permission
+
+Permission mengikuti pola:
+
+```text
+{Action}:{Resource}
+```
+
+**Contoh:** `View:Product`, `Create:Post`, `Publish:Page`.
+
+## Standard Actions
+
+| Action | Deskripsi |
+| --- | --- |
+| `ViewAny` | Lihat halaman list resource. |
+| `View` | Lihat detail record tertentu. |
+| `ViewOwn` | Hanya lihat record milik sendiri (author). |
+| `Create` | Buat record baru. |
+| `Update` | Edit record existing. |
+| `Delete` | Hapus satu record (soft delete). |
+| `DeleteAny` | Bulk delete beberapa record. |
+| `Restore` | Restore record yang di-soft-delete. |
+| `Publish` | Toggle `is_published` (custom action). |
+
+## Resource Yang Punya Permission
+
+| Resource | Actions Standard | Actions Khusus |
+| --- | --- | --- |
+| `Product` | ViewAny, View, Create, Update, Delete | `Publish:Product` |
+| `ProductCategory` | ViewAny, View, Create, Update, Delete | – |
+| `Order` | ViewAny, View, Create, Update, Delete | – |
+| `Coupon` | ViewAny, View, Create, Update, Delete | – |
+| `Currency` | ViewAny, View, Create, Update, Delete | – |
+| `Post` | ViewAny, View, ViewOwn, Create, Update, Delete, DeleteAny, Restore | `Publish:Post` |
+| `Category` | ViewAny, View, Create, Update, Delete | – |
+| `Tag` | ViewAny, View, Create, Update, Delete | – |
+| `Page` | ViewAny, View, Create, Update, Delete, DeleteAny, Restore | `Publish:Page` |
+| `Project` | ViewAny, View, Create, Update, Delete | – |
+| `MenuItem` | ViewAny, View, Create, Update, Delete | – |
+| `User` | ViewAny, View, Create, Update, Delete | – |
+| `Admin` | ViewAny, View, Create, Update, Delete | – |
+| `Invitation` | ViewAny, View, Create, Update, Delete | – |
+| `EmailTemplate` | ViewAny, View, Create, Update, Delete | – |
+
+## Widget & Page Permission
+
+Selain resource, widget dashboard dan page khusus punya permission `View:{ClassName}`:
+
+| Permission | Untuk |
+| --- | --- |
+| `View:SalesOverview` | Widget Sales Overview. |
+| `View:OrderStatsOverview` | Widget Order Stats. |
+| `View:RevenueChart` | Widget Revenue Chart. |
+| `View:OrdersByStatusChart` | Widget Orders By Status. |
+| `View:LatestOrders` | Widget Latest Orders. |
+| `View:SendNewsletter` | Page Send Newsletter. |
+| `View:Settings` | Page Settings. |
+| `View:SEO` | Page SEO. |
+| `View:HomepageBuilder` | Page Homepage Builder. |
+
+## Default Roles
+
+Generate via artisan command:
+
+```bash
+php artisan app:create-default-roles
+```
+
+Gunakan `--force` untuk recreate role yang sudah ada:
+
+```bash
+php artisan app:create-default-roles --force
+```
+
+### Role: writer (WordPress Author equivalent)
+
+Bisa manage post sendiri, view kategori dan tag.
+
+| Permission | Akses |
+| --- | --- |
+| `ViewOwn:Post`, `View:Post` | Lihat post milik sendiri. |
+| `Create:Post`, `Update:Post`, `Delete:Post` | CRUD post sendiri. |
+| `Publish:Post` | Publish post. |
+| `ViewAny:Category`, `View:Category` | Lihat kategori (read-only). |
+| `ViewAny:Tag`, `View:Tag` | Lihat tag (read-only). |
+
+### Role: editor (WordPress Editor equivalent)
+
+Full CRUD untuk konten, view-only untuk Project. Bisa akses widget dashboard.
+
+**Post:** ViewAny, View, ViewOwn, Create, Update, Delete, DeleteAny, Restore, Publish
+
+**Page:** ViewAny, View, Create, Update, Delete, DeleteAny, Restore, Publish
+
+**Category:** ViewAny, View, Create, Update, Delete
+
+**Tag:** ViewAny, View, Create, Update, Delete
+
+**Product:** ViewAny, View, Create, Update, Delete, Publish
+
+**ProductCategory:** ViewAny, View, Create, Update, Delete
+
+**Project:** ViewAny, View (read-only)
+
+**Widgets:** View:LatestOrders, View:OrderStatsOverview, View:SalesOverview, View:RevenueChart, View:OrdersByStatusChart
+
+### Role Super Admin
+
+User dengan `is_admin = true` **bypass** semua permission check (via Gate::before di `AppServiceProvider`).
+
+Untuk assign:
+
+```php
+$user->update(['is_admin' => true]);
+```
+
+<Warning>
+  User dengan `is_admin = true` mem-bypass Spatie Permission sepenuhnya. Gunakan hanya untuk owner site.
+</Warning>
+
+## Sync Permission dari Filament
+
+Setiap kali menambah resource / widget / page baru, jalankan:
+
+```bash
+php artisan guardian:sync
+```
+
+Command ini auto-generate permission dari class Filament yang ditemukan. Tanpa sync, permission baru tidak ada di database.
+
+<Info>
+  `guardian:sync` juga dijalankan otomatis di dalam `app:create-default-roles`.
+</Info>
+
+## Cek Permission di Code
+
+```php
+auth()->user()->hasPermissionTo('Publish:Post');
+
+auth()->user()->can('Publish:Post');
+
+auth()->user()->hasRole('editor');
+```
+
+## Custom Permission
+
+Untuk membuat permission custom (bukan dari Filament resource), tambahkan langsung ke Spatie:
+
+```php
+use Spatie\Permission\Models\Permission;
+
+Permission::create([
+    'name' => 'Approve:Refund',
+    'guard_name' => 'web',
+]);
+```
+
+Atau di seeder / migration untuk konsistensi antar environment.
+
+## Cek User Bisa Akses
+
+Di Filament, permission dicek otomatis via **Policy** yang di-generate guardian. Untuk cek manual:
+
+```php
+// Cek akses ke resource
+if (! ProductResource::canViewAny()) {
+    abort(403);
+}
+
+// Cek akses ke record
+if (! ProductResource::canView($product)) {
+    abort(403);
+}
+```
+
+## Troubleshooting
+
+**Permission tidak muncul di dropdown role:**
+
+```bash
+php artisan guardian:sync
+php artisan cache:clear
+```
+
+**User tidak bisa akses walaupun sudah punya permission:**
+
+```bash
+php artisan permission:cache-reset
+```
+
+Cache Spatie Permission perlu di-clear setelah manipulasi role/permission via kode.

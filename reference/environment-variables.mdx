@@ -1,0 +1,177 @@
+---
+title: "Environment Variables"
+description: "Daftar lengkap variable .env yang dipakai aplikasi JIS"
+---
+
+Variable environment di-load dari file `.env` di root project. Salin dari `.env.example` saat setup:
+
+```bash
+cp .env.example .env
+php artisan key:generate
+```
+
+## Application
+
+| Variable | Default | Deskripsi |
+| --- | --- | --- |
+| `APP_NAME` | `Laravel` | Nama aplikasi. Ditampilkan di email dan meta tag. |
+| `APP_ENV` | `local` | Environment: `local`, `staging`, `production`. |
+| `APP_KEY` | (kosong) | Encryption key. Generate dengan `php artisan key:generate`. |
+| `APP_DEBUG` | `false` | Tampilkan stack trace saat error. **Selalu `false` di production**. |
+| `APP_URL` | `http://localhost` | URL dasar aplikasi. Dipakai untuk generate absolute URL. |
+| `APP_LOCALE` | `en` | Locale default. |
+| `APP_FALLBACK_LOCALE` | `en` | Fallback locale jika translation tidak ada. |
+| `APP_FAKER_LOCALE` | `en_US` | Locale Faker untuk seeder / factory. |
+| `APP_MAINTENANCE_DRIVER` | `file` | Driver maintenance mode. |
+| `BCRYPT_ROUNDS` | `12` | Cost bcrypt untuk hashing password. |
+
+## Logging
+
+| Variable | Default | Deskripsi |
+| --- | --- | --- |
+| `LOG_CHANNEL` | `stack` | Channel log default. |
+| `LOG_STACK` | `single` | Stack channels. |
+| `LOG_DEPRECATIONS_CHANNEL` | `null` | Channel untuk deprecation warnings. |
+| `LOG_LEVEL` | `debug` | Level minimum yang di-log. Di production biasanya `warning` / `error`. |
+
+## Database
+
+| Variable | Default | Deskripsi |
+| --- | --- | --- |
+| `DB_CONNECTION` | `mysql` | Driver DB: `mysql`, `pgsql`, `sqlite`. |
+| `DB_HOST` | `127.0.0.1` | Host DB server. |
+| `DB_PORT` | `3306` | Port DB (MySQL: 3306, Postgres: 5432). |
+| `DB_DATABASE` | `jis` | Nama database. |
+| `DB_USERNAME` | `root` | Username DB. |
+| `DB_PASSWORD` | (kosong) | Password DB. |
+
+Detail lihat [Database Configuration](/configuration/database).
+
+## Session & Cache
+
+| Variable | Default | Deskripsi |
+| --- | --- | --- |
+| `SESSION_DRIVER` | `database` | Driver session: `database`, `redis`, `file`. |
+| `SESSION_LIFETIME` | `120` | Umur session dalam menit. |
+| `SESSION_ENCRYPT` | `false` | Enkripsi session payload. |
+| `SESSION_PATH` | `/` | Cookie path. |
+| `SESSION_DOMAIN` | `null` | Cookie domain (untuk subdomain sharing). |
+| `CACHE_STORE` | `database` | Driver cache: `database`, `redis`, `file`, `array`. |
+
+## Queue
+
+| Variable | Default | Deskripsi |
+| --- | --- | --- |
+| `QUEUE_CONNECTION` | `database` | Driver queue: `database`, `redis`, `sync`. |
+| `BROADCAST_CONNECTION` | `log` | Driver broadcasting. |
+
+<Warning>
+  Jangan pakai `QUEUE_CONNECTION=sync` di production. Email dan job berat akan block request.
+</Warning>
+
+## Filesystem
+
+| Variable | Default | Deskripsi |
+| --- | --- | --- |
+| `FILESYSTEM_DISK` | `local` | Disk default. **File produk digital selalu di disk `local`** (bukan public). |
+
+## Redis (Opsional)
+
+| Variable | Default | Deskripsi |
+| --- | --- | --- |
+| `REDIS_CLIENT` | `phpredis` | Client library. |
+| `REDIS_HOST` | `127.0.0.1` | Host Redis. |
+| `REDIS_PASSWORD` | `null` | Password Redis. |
+| `REDIS_PORT` | `6379` | Port Redis. |
+
+## Mail
+
+| Variable | Default | Deskripsi |
+| --- | --- | --- |
+| `MAIL_MAILER` | `log` | Driver mail: `log`, `smtp`, `mailgun`, `postmark`. `log` = tulis ke `storage/logs/laravel.log`. |
+| `MAIL_SCHEME` | `null` | `null`, `smtp`, `smtps`. |
+| `MAIL_HOST` | `127.0.0.1` | Host SMTP. |
+| `MAIL_PORT` | `2525` | Port SMTP. |
+| `MAIL_USERNAME` | `null` | Username SMTP. |
+| `MAIL_PASSWORD` | `null` | Password SMTP. |
+| `MAIL_FROM_ADDRESS` | `hello@example.com` | Alamat pengirim default. |
+| `MAIL_FROM_NAME` | `${APP_NAME}` | Nama pengirim default. |
+
+Detail setup lihat [Email Configuration](/configuration/email).
+
+## AWS S3 (Opsional)
+
+| Variable | Default | Deskripsi |
+| --- | --- | --- |
+| `AWS_ACCESS_KEY_ID` | (kosong) | Access key S3. |
+| `AWS_SECRET_ACCESS_KEY` | (kosong) | Secret key S3. |
+| `AWS_DEFAULT_REGION` | `us-east-1` | Region S3. |
+| `AWS_BUCKET` | (kosong) | Nama bucket. |
+| `AWS_USE_PATH_STYLE_ENDPOINT` | `false` | Path-style URL untuk custom S3-compatible. |
+
+## Checkout
+
+| Variable | Default | Deskripsi |
+| --- | --- | --- |
+| `CHECKOUT_ALLOW_GUEST` | `false` | Izinkan checkout tanpa login. |
+
+## Midtrans (Payment Gateway)
+
+| Variable | Default | Deskripsi |
+| --- | --- | --- |
+| `PAYMENT_GATEWAY` | `midtrans` | Payment gateway aktif. |
+| `MIDTRANS_SERVER_KEY` | (kosong) | Server key dari Midtrans dashboard. **Rahasia**. |
+| `MIDTRANS_CLIENT_KEY` | (kosong) | Client key untuk Snap frontend. |
+| `MIDTRANS_MERCHANT_ID` | (kosong) | Merchant ID Midtrans. |
+| `MIDTRANS_IS_PRODUCTION` | `false` | `true` = production API, `false` = sandbox. |
+
+Detail setup lihat [Midtrans Configuration](/configuration/midtrans).
+
+## Currency
+
+| Variable | Default | Deskripsi |
+| --- | --- | --- |
+| `DEFAULT_CURRENCY` | `IDR` | Currency default site. **Semua exchange\_rate relatif terhadap currency ini**. |
+
+## Google OAuth
+
+| Variable | Default | Deskripsi |
+| --- | --- | --- |
+| `GOOGLE_CLIENT_ID` | (kosong) | Client ID dari Google Cloud Console. |
+| `GOOGLE_CLIENT_SECRET` | (kosong) | Client secret. **Rahasia**. |
+| `GOOGLE_REDIRECT_URI` | `${APP_URL}/auth/google/callback` | Callback URL. Harus di-whitelist di Google Console. |
+
+Detail setup lihat [Google OAuth Configuration](/configuration/google-oauth).
+
+## Vite (Frontend Build)
+
+| Variable | Default | Deskripsi |
+| --- | --- | --- |
+| `VITE_APP_NAME` | `${APP_NAME}` | Nama app yang diekspos ke frontend JS. |
+
+<Tip>
+  Variable dengan prefix `VITE_` diekspos ke browser. Jangan simpan secret di sini.
+</Tip>
+
+## Security Checklist Production
+
+<Steps>
+  <Step title="APP_DEBUG=false">
+    Cegah stack trace bocor ke user.
+  </Step>
+  <Step title="APP_KEY di-generate">
+    `php artisan key:generate` sekali saat deploy pertama.
+  </Step>
+  <Step title="MIDTRANS_IS_PRODUCTION=true">
+    Pindah dari sandbox ke production key.
+  </Step>
+  <Step title="LOG_LEVEL=warning">
+    Kurangi noise log di production.
+  </Step>
+  <Step title="QUEUE_CONNECTION=database (atau redis)">
+    Bukan `sync` supaya email tidak block request.
+  </Step>
+  <Step title="MAIL_MAILER=smtp">
+    Bukan `log`. Setup provider seperti Mailgun/Postmark.
+  </Step>
+</Steps>
