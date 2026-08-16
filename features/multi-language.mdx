@@ -24,6 +24,10 @@ Semua route frontend berada di dalam grup `Route::translate()` sehingga URL-nya 
 
 ## Switch Bahasa
 
+<Frame caption="Switch Bahasa">
+    ![switch-language](/images/switch-language.png)
+</Frame>
+
 User bisa switch bahasa melalui language selector di header. Preferensi bahasa disimpan di session dan cookie.
 
 ## Menambahkan Konten Multi-Bahasa
@@ -35,24 +39,28 @@ Resource yang mendukung translasi (Products, Posts, Pages, Projects) memiliki fi
     Contoh: **Posts → Create**.
   </Step>
   <Step title="Isi field per bahasa">
-    Admin panel akan menampilkan tab atau field terpisah untuk **Indonesia** dan **English**. Isi keduanya.
+    Gunakan **switch bahasa** di pojok kanan atas untuk berpindah antara **Indonesia** dan **English**. Isi konten untuk setiap bahasa.
   </Step>
   <Step title="Simpan">
-    Konten akan muncul di URL yang sesuai dengan bahasa masing-masing.
+    Simpan konten untuk kedua bahasa.
   </Step>
 </Steps>
 
 ## Menambah Bahasa Baru
 
+<Frame caption="Halaman Settings untuk menambah bahasa">
+    ![settings-add-localizations](/images/setting-add-localizations.png)
+</Frame>
+
 <Steps>
-  <Step title="Buat file translation">
-    Buat folder `lang/{kode_bahasa}/` dan copy semua file dari `lang/id/`, lalu terjemahkan.
+  <Step title="Buka Settings">
+    Kunjungi `/admin/settings/settings`.
   </Step>
-  <Step title="Tambahkan ke Language model">
-    Buat entry baru di tabel `languages` (via seeder atau admin panel jika resource tersedia) dengan kode bahasa dan nama.
+  <Step title="Tambah bahasa baru">
+    Pilih **Supported locales** sesuai bahasa yang diinginkan.
   </Step>
-  <Step title="Update Localizer config">
-    Sesuaikan `config/localizer.php` untuk mendaftarkan bahasa baru.
+  <Step title="Pilih bahasa default">
+    Pilih bahasa yang ingin dijadikan default.
   </Step>
 </Steps>
 

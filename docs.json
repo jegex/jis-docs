@@ -68,8 +68,10 @@
             "icon": "gauge-high",
             "pages": [
               "admin-panel/overview",
+              "admin-panel/homepage-builder",
+              "admin-panel/projects",
               {
-                "group": "E-commerce",
+                "group": "Shop",
                 "icon": "cart-shopping",
                 "pages": [
                   "admin-panel/ecommerce/products",
@@ -87,7 +89,7 @@
                   "admin-panel/content/categories",
                   "admin-panel/content/tags",
                   "admin-panel/content/pages",
-                  "admin-panel/content/projects",
+                  "admin-panel/projects",
                   "admin-panel/content/menu-items"
                 ]
               },
@@ -114,7 +116,7 @@
                 "pages": [
                   "admin-panel/settings/settings",
                   "admin-panel/settings/seo",
-                  "admin-panel/settings/homepage-builder"
+                  "admin-panel/homepage-builder"
                 ]
               }
             ]
