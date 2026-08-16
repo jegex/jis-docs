@@ -1,0 +1,72 @@
+---
+title: "Posts"
+description: "Artikel blog dengan kategori, tag, author, dan cover image"
+---
+
+Resource **Posts** mengelola artikel blog. Content multi-bahasa dengan translatable fields.
+
+**Lokasi:** Sidebar → **Posts**
+
+## Screenshot
+
+<Frame caption="Daftar posts">
+  {/* TODO: masukkan screenshot list Posts */}
+</Frame>
+
+<Frame caption="Form create/edit post">
+  {/* TODO: masukkan screenshot form Post */}
+</Frame>
+
+## Struktur Form
+
+### Section: General (Column Utama)
+
+| Field | Tipe | Keterangan |
+| --- | --- | --- |
+| `title` | Text (translatable) | Judul post. Auto-generate slug. |
+| `slug` | Text | URL slug unik. |
+| `excerpt` | Textarea | Ringkasan post untuk kartu blog & meta description. |
+| `content` | Rich Editor | Konten lengkap post dengan formatting. |
+
+### Section: Publishing (Sidebar)
+
+| Field | Tipe | Keterangan |
+| --- | --- | --- |
+| `is_published` | Toggle | Status publikasi. Hanya user dengan permission `Publish:Post` yang bisa mengubah. |
+| `published_at` | DateTime | Tanggal publikasi. Default: sekarang. |
+| `category_id` | Select (relation) | Kategori post. |
+| `author_id` | Select (relation) | Author post. Default: user yang sedang login. |
+
+### Section: Featured Image
+
+| Field | Tipe | Keterangan |
+| --- | --- | --- |
+| `featured_image` | Image Upload | Cover image untuk post. Max 2 MB. |
+
+### Section: SEO
+
+Menggunakan `SeoSchema` bersama. Template default bisa diatur di [SEO Settings](/admin-panel/settings/seo) tab Posts.
+
+## Cara Menambahkan Post
+
+<Steps>
+  <Step title="Buka Posts">
+    Sidebar → **Posts** → klik **New Post**.
+  </Step>
+  <Step title="Isi judul & konten">
+    Isi title dan content untuk setiap bahasa yang aktif.
+  </Step>
+  <Step title="Set publishing">
+    Pilih kategori dan author. Aktifkan **Published** jika sudah siap.
+  </Step>
+  <Step title="Upload cover">
+    Upload featured image (rekomendasi rasio 16:9).
+  </Step>
+  <Step title="Save">
+    Klik **Create**.
+  </Step>
+</Steps>
+
+<Tip>
+  Post yang sudah `published_at` di masa depan tidak akan muncul di frontend sampai waktu publikasi tercapai.
+</Tip>

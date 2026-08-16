@@ -1,0 +1,65 @@
+---
+title: "Multi-Language"
+description: "Sistem multi-bahasa Indonesia & Inggris menggunakan Laravel Localizer"
+---
+
+JIS mendukung dua bahasa: **Indonesia** dan **Inggris**. Sistem menggunakan package `nielsnumbers/laravel-localizer` untuk URL translation dan konten multi-bahasa.
+
+## Struktur URL
+
+Semua route frontend berada di dalam grup `Route::translate()` sehingga URL-nya berbeda per bahasa.
+
+| Halaman | Bahasa Indonesia | Bahasa Inggris |
+| --- | --- | --- |
+| Home | `/` | `/en` |
+| Products | `/produk` | `/en/products` |
+| Product Detail | `/produk/{slug}` | `/en/products/{slug}` |
+| Blog | `/blog` | `/en/blog` |
+| Checkout | `/checkout` | `/en/checkout` |
+| Customer Dashboard | `/akun` | `/en/account` |
+
+<Info>
+  URL translation didefinisikan di file locale (biasanya `lang/id/routes.php` dan `lang/en/routes.php`).
+</Info>
+
+## Switch Bahasa
+
+User bisa switch bahasa melalui language selector di header. Preferensi bahasa disimpan di session dan cookie.
+
+## Menambahkan Konten Multi-Bahasa
+
+Resource yang mendukung translasi (Products, Posts, Pages, Projects) memiliki field terpisah untuk setiap bahasa di admin panel.
+
+<Steps>
+  <Step title="Buka resource di admin">
+    Contoh: **Posts → Create**.
+  </Step>
+  <Step title="Isi field per bahasa">
+    Admin panel akan menampilkan tab atau field terpisah untuk **Indonesia** dan **English**. Isi keduanya.
+  </Step>
+  <Step title="Simpan">
+    Konten akan muncul di URL yang sesuai dengan bahasa masing-masing.
+  </Step>
+</Steps>
+
+## Menambah Bahasa Baru
+
+<Steps>
+  <Step title="Buat file translation">
+    Buat folder `lang/{kode_bahasa}/` dan copy semua file dari `lang/id/`, lalu terjemahkan.
+  </Step>
+  <Step title="Tambahkan ke Language model">
+    Buat entry baru di tabel `languages` (via seeder atau admin panel jika resource tersedia) dengan kode bahasa dan nama.
+  </Step>
+  <Step title="Update Localizer config">
+    Sesuaikan `config/localizer.php` untuk mendaftarkan bahasa baru.
+  </Step>
+</Steps>
+
+## SEO Multi-Language
+
+Untuk SEO yang optimal, JIS otomatis menambahkan:
+
+- Tag `<link rel="alternate" hreflang="...">` untuk setiap versi bahasa
+- Sitemap.xml yang mencakup semua URL bahasa
+- Meta title dan description sesuai bahasa halaman

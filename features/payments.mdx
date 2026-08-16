@@ -1,0 +1,95 @@
+---
+title: "Payment & Order Flow"
+description: "Alur pembayaran dan callback Midtrans"
+---
+
+JIS menggunakan **Midtrans Snap** untuk memproses pembayaran. Berikut alur lengkap dari checkout sampai file digital bisa didownload.
+
+## Alur Checkout
+
+<Steps>
+  <Step title="User pilih produk">
+    User membuka halaman produk dan klik **Beli Sekarang**. Produk masuk ke checkout page.
+  </Step>
+  <Step title="Login / Register">
+    User yang belum login diarahkan untuk login atau register (Fortify atau Google OAuth).
+  </Step>
+  <Step title="Isi form checkout">
+    User mengisi data billing dan bisa menginput kode kupon jika tersedia.
+  </Step>
+  <Step title="Snap popup muncul">
+    Aplikasi memanggil Midtrans Snap API untuk membuat transaction, popup Midtrans muncul dengan pilihan metode pembayaran.
+  </Step>
+  <Step title="User membayar">
+    User memilih metode pembayaran (kartu kredit, GoPay, QRIS, dll) dan menyelesaikan pembayaran.
+  </Step>
+  <Step title="Callback dari Midtrans">
+    Midtrans mengirim notifikasi ke `/api/payment/callback`. Aplikasi memverifikasi signature dan mengupdate status order.
+  </Step>
+  <Step title="File digital tersedia">
+    Setelah status order berubah menjadi `paid`, user bisa mendownload file digital dari **Customer Dashboard → Downloads**.
+  </Step>
+</Steps>
+
+## Route Terkait Payment
+
+### Non-Localized Routes
+
+| Method | URL | Keterangan |
+| --- | --- | --- |
+| `POST` | `/api/payment/callback` | Webhook Midtrans (notification URL) |
+| `POST` | `/api/payment/recurring-callback` | Webhook untuk recurring payment |
+| `POST` | `/api/payment/pay-account-callback` | Webhook untuk pay account |
+| `GET` | `/download/{order}/{product}` | Download file digital (auth required) |
+
+### Localized Frontend Routes
+
+| URL | Keterangan |
+| --- | --- |
+| `/checkout` | Checkout form (auth \+ verified) |
+| `/payment/success` | Halaman sukses setelah pembayaran |
+| `/payment/pending` | Halaman pending (menunggu pembayaran) |
+| `/payment/error` | Halaman error pembayaran |
+| `/payment/finish` | Redirect finish dari Midtrans |
+| `/payment/unfinish` | Redirect unfinish dari Midtrans |
+
+## Status Order
+
+| Status | Keterangan |
+| --- | --- |
+| `pending` | Order dibuat, menunggu pembayaran |
+| `paid` | Pembayaran sukses, file digital bisa didownload |
+| `failed` | Pembayaran gagal atau expired |
+| `cancelled` | Order dibatalkan oleh user atau admin |
+
+## Multi-Currency
+
+Harga produk disimpan dalam satu mata uang dasar (IDR), lalu dikonversi ke mata uang lain menggunakan **nilai tukar dinamis** yang bisa diatur di admin panel.
+
+User bisa switch currency lewat menu currency selector di header. Route yang bertanggung jawab:
+
+```text
+GET /currency/{currency:code}
+```
+
+<Info>
+  Konversi ke IDR selalu dilakukan sebelum pembayaran diproses Midtrans, karena Midtrans hanya menerima transaksi dalam IDR.
+</Info>
+
+## Kupon Diskon
+
+Kupon bisa dibuat di admin panel dengan tipe:
+
+- **Fixed:** potongan nominal (misal Rp 50.000)
+- **Percentage:** potongan persen (misal 10% dari total)
+
+Batasan yang bisa diatur:
+
+- `max_uses`: total pemakaian maksimal (semua user)
+- `max_uses_per_user`: pemakaian maksimal per user
+- `expires_at`: tanggal kadaluwarsa
+- `min_purchase`: minimal pembelian untuk bisa apply
+
+<Tip>
+  Lihat [Konfigurasi Midtrans](/configuration/midtrans) untuk setup API keys dan notification URL.
+</Tip>

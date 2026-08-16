@@ -1,0 +1,105 @@
+---
+title: "Settings"
+description: "Pengaturan umum aplikasi: logo, sosial media, kontak, format tanggal, localization, dan custom scripts"
+---
+
+Page **Settings** mengatur konfigurasi umum aplikasi. Berada di **Cluster: Settings** dan dikelompokkan dalam beberapa tab.
+
+**Lokasi:** Sidebar → **Settings** → **Settings**
+
+## Screenshot
+
+<Frame caption="Halaman Settings dengan tab navigation">
+  {/* TODO: masukkan screenshot Settings page */}
+</Frame>
+
+## Tab: General
+
+| Field | Tipe | Keterangan |
+| --- | --- | --- |
+| `frontend.site_title` | Text (translatable) | Nama site yang tampil di header/footer. |
+| `frontend.site_description` | Textarea (translatable) | Tagline / deskripsi singkat site. |
+| `frontend.logo` | File Upload | Path logo, disimpan relatif dari `public/`. |
+| `frontend.favicon` | File Upload | Path favicon. |
+
+## Tab: Date & Time
+
+| Field | Tipe | Keterangan |
+| --- | --- | --- |
+| `date_format` | Select | Format tampilan tanggal (misal `d/m/Y`, `Y-m-d`, `d M Y`). Descriptions menampilkan contoh format aktual. |
+| `time_format` | Select | Format tampilan jam. Options: `g:i a`, `g:i A`, `H:i`. |
+
+## Tab: Collection
+
+| Field | Tipe | Keterangan |
+| --- | --- | --- |
+| `products_per_page` | Number | Jumlah produk per halaman di katalog. Default: `9`. |
+| `posts_per_page` | Number | Jumlah post per halaman di blog. Default: `9`. |
+
+## Tab: Localization
+
+| Field | Tipe | Keterangan |
+| --- | --- | --- |
+| `supported_locales` | Select (multiple) | Bahasa yang aktif di frontend. Options diambil dari model `Language`. |
+| `default_locale` | Select | Bahasa default. Hanya bisa dipilih dari `supported_locales`. |
+| `hide_default_locale` | Toggle | Sembunyikan prefix locale default di URL. Default: `true`. |
+| `redirect_enabled` | Toggle | Auto-redirect visitor ke locale mereka. Default: `true`. |
+| `persist_locale.session` | Toggle | Simpan pilihan locale di session. Default: `true`. |
+| `persist_locale.cookie` | Toggle | Simpan pilihan locale di cookie. Default: `true`. |
+
+Untuk detail lebih dalam, baca [Multi-language](/features/multi-language).
+
+## Tab: Footer
+
+### Translatable
+
+| Field | Tipe | Keterangan |
+| --- | --- | --- |
+| `footer_description` | Textarea (translatable) | Deskripsi footer per bahasa. |
+| `footer_copyright` | Text (translatable) | Text copyright. Gunakan `:year` untuk tahun dinamis. |
+
+### Address & Contact
+
+| Field | Tipe | Keterangan |
+| --- | --- | --- |
+| `contact_address` | Textarea | Alamat lengkap. |
+| `contact_phone` | Text (tel) | Nomor telepon. |
+| `contact_email` | Text (email) | Email kontak. |
+
+### Social Media
+
+Repeater `social` (collapsible):
+
+| Field | Tipe | Keterangan |
+| --- | --- | --- |
+| `name` | Text | Nama platform (Facebook, Instagram, dll). |
+| `url` | Text | URL profil sosmed. |
+| `icon_svg` | Code Editor (HTML) | SVG icon yang ditampilkan. |
+
+## Tab: Custom Scripts
+
+| Field | Tipe | Keterangan |
+| --- | --- | --- |
+| `before_head` | Code Editor (HTML) | Script yang di-inject sebelum `</head>` (misal Google Analytics, Meta Pixel). |
+| `before_body` | Code Editor (HTML) | Script yang di-inject sebelum `</body>` (misal chat widget). |
+
+## Cara Update Settings
+
+<Steps>
+  <Step title="Buka Settings">
+    Sidebar → **Settings** → **Settings**.
+  </Step>
+  <Step title="Pilih tab">
+    Klik tab yang ingin diedit. Setting dari tab lain tidak akan hilang.
+  </Step>
+  <Step title="Edit field">
+    Ubah field yang diperlukan. Untuk translatable field, edit per bahasa.
+  </Step>
+  <Step title="Save">
+    Klik **Save**. Perubahan langsung berlaku.
+  </Step>
+</Steps>
+
+<Tip>
+  Untuk konfigurasi payment gateway (Midtrans), lihat [Midtrans Configuration](/configuration/midtrans).
+</Tip>

@@ -1,0 +1,130 @@
+---
+title: "Overview"
+description: "Ringkasan admin panel Filament dan resource yang tersedia"
+---
+
+Admin panel JIS dibangun dengan **Filament 5** dan bisa diakses di `/admin`.
+
+```text
+https://domainmu.com/admin
+```
+
+## Login Admin
+
+User dengan role admin bisa login menggunakan email dan password yang sudah didaftarkan. User admin default dibuat lewat seeder saat `php artisan migrate --seed` dijalankan.
+
+<Warning>
+  Ganti password admin default segera setelah instalasi selesai.
+</Warning>
+
+## Resource yang Tersedia
+
+Admin panel JIS mengorganisasi resource ke dalam beberapa kategori utama.
+
+### E-commerce
+
+<CardGroup cols={2}>
+  <Card title="Products" icon="box" href="/admin-panel/ecommerce/products">
+    Kelola produk digital dengan file yang bisa didownload.
+  </Card>
+
+  <Card title="Product Categories" icon="folder-tree" href="/admin-panel/ecommerce/product-categories">
+    Kategori khusus untuk produk (terpisah dari kategori blog).
+  </Card>
+
+  <Card title="Orders" icon="receipt" href="/admin-panel/ecommerce/orders">
+    Riwayat order pelanggan dengan status pembayaran dan payment log.
+  </Card>
+
+  <Card title="Coupons" icon="ticket" href="/admin-panel/ecommerce/coupons">
+    Kode kupon diskon (fixed / percentage).
+  </Card>
+
+  <Card title="Currencies" icon="coins" href="/admin-panel/ecommerce/currencies">
+    Master mata uang dengan nilai tukar dinamis.
+  </Card>
+</CardGroup>
+
+### Konten
+
+<CardGroup cols={2}>
+  <Card title="Posts" icon="newspaper" href="/admin-panel/content/posts">
+    Artikel blog dengan kategori, tag, dan author.
+  </Card>
+
+  <Card title="Categories" icon="tags" href="/admin-panel/content/categories">
+    Kategori artikel blog.
+  </Card>
+
+  <Card title="Tags" icon="tag" href="/admin-panel/content/tags">
+    Tag artikel blog untuk pengelompokan tambahan.
+  </Card>
+
+  <Card title="Pages" icon="file-lines" href="/admin-panel/content/pages">
+    Halaman statis (tentang kami, kontak, privasi).
+  </Card>
+
+  <Card title="Projects" icon="folder-open" href="/admin-panel/content/projects">
+    Portfolio proyek dengan spesifikasi dan foto.
+  </Card>
+
+  <Card title="Menu Items" icon="bars" href="/admin-panel/content/menu-items">
+    Menu navigasi header/footer dengan drag & drop.
+  </Card>
+</CardGroup>
+
+### User Management
+
+<CardGroup cols={2}>
+  <Card title="Users" icon="users" href="/admin-panel/users/users">
+    Semua user pelanggan dan riwayat order per user.
+  </Card>
+
+  <Card title="Admins" icon="user-shield" href="/admin-panel/users/admins">
+    User dengan akses admin panel.
+  </Card>
+
+  <Card title="Invitations" icon="envelope-circle-check" href="/admin-panel/users/invitations">
+    Undangan untuk user baru via link set password.
+  </Card>
+</CardGroup>
+
+### Mail
+
+<CardGroup cols={2}>
+  <Card title="Email Templates" icon="envelope-open-text" href="/admin-panel/mail/email-templates">
+    Template email transaksional.
+  </Card>
+
+  <Card title="Send Newsletter" icon="paper-plane" href="/admin-panel/mail/send-newsletter">
+    Kirim newsletter ke seluruh user via queue.
+  </Card>
+</CardGroup>
+
+### Site Configuration
+
+<CardGroup cols={2}>
+  <Card title="Settings" icon="gear" href="/admin-panel/settings/settings">
+    Logo, sosial media, kontak, integrasi payment gateway.
+  </Card>
+
+  <Card title="SEO" icon="magnifying-glass" href="/admin-panel/settings/seo">
+    Template meta title, description, dan OpenGraph.
+  </Card>
+
+  <Card title="Homepage Builder" icon="table-cells-large" href="/admin-panel/settings/homepage-builder">
+    Atur blok dinamis homepage.
+  </Card>
+</CardGroup>
+
+## Dashboard Widgets
+
+Halaman utama admin menampilkan beberapa widget:
+
+| Widget | Fungsi |
+| --- | --- |
+| **Sales Overview** | Ringkasan penjualan (total revenue, jumlah order, average order value). |
+| **Order Stats Overview** | Statistik order per status (pending, paid, cancelled). |
+| **Revenue Chart** | Grafik revenue per periode. |
+| **Orders By Status Chart** | Distribusi order berdasarkan status. |
+| **Latest Orders** | Daftar order terbaru dengan quick action. |

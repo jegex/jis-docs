@@ -1,0 +1,69 @@
+---
+title: "Projects"
+description: "Portfolio proyek dengan spesifikasi, foto, dan tipe proyek"
+---
+
+Resource **Projects** mengelola portfolio proyek yang pernah dikerjakan. Menggunakan single-page resource (`ManageProjects`) tanpa halaman create/edit terpisah.
+
+**Lokasi:** Sidebar → **Projects**
+
+## Screenshot
+
+<Frame caption="Halaman Manage Projects">
+  {/* TODO: masukkan screenshot manage projects */}
+</Frame>
+
+<Frame caption="Modal create/edit project">
+  {/* TODO: masukkan screenshot form Project */}
+</Frame>
+
+## Struktur Form
+
+| Field | Tipe | Keterangan |
+| --- | --- | --- |
+| `name` | Text | Nama proyek. Harus unik. |
+| `type` | Text (datalist) | Tipe proyek. Datalist auto-populate dari nilai `type` yang sudah ada (autocomplete). |
+| `size` | Text | Ukuran proyek (misal `1500`). |
+| `unit` | Text | Satuan ukuran (misal `m²`, `unit`, `kW`). |
+| `date` | Date | Tanggal proyek dikerjakan. Format native browser dimatikan. |
+| `is_published` | Toggle | Status publikasi (default: `false`). |
+
+<Info>
+  Field `size` dan `unit` dikelompokkan dalam **FusedGroup** dengan label "Size", jadi tampil sebagai satu input grup di UI.
+</Info>
+
+## Kolom Table
+
+| Kolom | Sortable | Searchable |
+| --- | --- | --- |
+| `name` | – | ✅ |
+| `type` | – | ✅ |
+| `size` (state: `size + unit`) | – | ✅ |
+| `date` | ✅ | – |
+| `is_published` (icon) | – | – |
+
+Default sort: `date desc` (proyek terbaru di atas).
+
+## Cara Menambahkan Project
+
+<Steps>
+  <Step title="Buka Projects">
+    Sidebar → **Projects**.
+  </Step>
+  <Step title="Klik New">
+    Modal form akan muncul (bukan halaman terpisah).
+  </Step>
+  <Step title="Isi detail">
+    Isi name, type, size \+ unit, dan date proyek.
+  </Step>
+  <Step title="Toggle Published">
+    Aktifkan **Published** untuk tampil di halaman portfolio.
+  </Step>
+  <Step title="Save">
+    Klik **Create** untuk menyimpan.
+  </Step>
+</Steps>
+
+<Tip>
+  Field `type` menggunakan datalist yang auto-suggest dari tipe yang pernah dipakai sebelumnya. Membantu konsistensi kategorisasi.
+</Tip>

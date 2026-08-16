@@ -1,0 +1,91 @@
+---
+title: "Testing"
+description: "Menjalankan test suite JIS dengan Pest dan PHPUnit"
+---
+
+JIS menggunakan **Pest 4** sebagai testing framework, berjalan di atas **PHPUnit 12**. Test suite mencakup smoke test, admin pages, public pages, dan localization.
+
+## Menjalankan Semua Test
+
+```bash
+composer run test
+```
+
+Atau jalankan Pest langsung:
+
+```bash
+./vendor/bin/pest
+```
+
+## Menjalankan Test Spesifik
+
+```bash
+# Filter berdasarkan nama file
+php artisan test --compact --filter=AdminPagesTest
+
+# Filter berdasarkan nama test case (Pest)
+./vendor/bin/pest --filter=test_homepage_loads
+
+# Compact output (lebih ringkas)
+php artisan test --compact
+```
+
+## Test Coverage
+
+```bash
+./vendor/bin/pest --coverage
+```
+
+<Info>
+  Membutuhkan extension **Xdebug** atau **PCOV** untuk generate coverage report.
+</Info>
+
+## Kategori Test
+
+| Kategori | Fokus |
+| --- | --- |
+| Smoke Test | Aplikasi bisa boot dan halaman utama return 200 |
+| Admin Pages | Semua Filament resource loads tanpa error |
+| Public Pages | Halaman publik (home, blog, product, checkout) accessible |
+| Localization | URL translation dan konten per bahasa berfungsi |
+
+## Menulis Test Baru
+
+File test berada di folder `tests/`. Contoh Pest test:
+
+```php
+<?php
+
+declare(strict_types=1);
+
+test('homepage loads successfully', function () {
+    $response = $this->get('/');
+
+    $response->assertOk();
+    $response->assertSee('CMS Shop Digital');
+});
+```
+
+## Test Database
+
+Pest menggunakan database terpisah untuk testing. Konfigurasi ada di `phpunit.xml`:
+
+```xml
+<env name="DB_CONNECTION" value="sqlite"/>
+<env name="DB_DATABASE" value=":memory:"/>
+```
+
+Setiap test dijalankan dalam database in-memory yang di-reset per test class.
+
+## Continuous Integration
+
+Untuk CI/CD (GitHub Actions, GitLab CI), jalankan:
+
+```bash
+composer install --optimize-autoloader --no-dev
+composer run test
+```
+
+<Tip>
+  Jalankan `vendor/bin/pint --format agent` sebelum commit untuk memastikan code formatting konsisten dengan seluruh codebase.
+</Tip>

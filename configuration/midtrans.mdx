@@ -1,0 +1,102 @@
+---
+title: "Midtrans Payment"
+description: "Setup payment gateway Midtrans untuk menerima pembayaran"
+---
+
+Midtrans adalah payment gateway utama JIS yang mendukung kartu kredit, GoPay, ShopeePay, QRIS, dan berbagai metode pembayaran lainnya melalui Snap popup.
+
+## Buat Akun Midtrans
+
+<Steps>
+  <Step title="Register">
+    Buka [dashboard.midtrans.com](https://dashboard.midtrans.com) dan klik **Register**.
+  </Step>
+  <Step title="Pilih Sandbox mode">
+    Untuk testing, gunakan mode **Sandbox**. Setelah siap production, aktifkan mode **Production**.
+  </Step>
+</Steps>
+
+## Dapatkan API Keys
+
+<Steps>
+  <Step title="Buka Access Keys">
+    Login ke dashboard Midtrans, di sidebar kiri klik **Settings → Access Keys**.
+  </Step>
+  <Step title="Copy kredensial">
+    Anda akan melihat tiga nilai penting:
+
+    | Field | Contoh Nilai |
+    | --- | --- |
+    | Server Key | `SB-Mid-server-xxxxxxxxxxxxxxxx` |
+    | Client Key | `SB-Mid-client-xxxxxxxxxxxxxxxx` |
+    | Merchant ID | `G822801271` |
+  </Step>
+</Steps>
+
+## Set Notification URL
+
+<Warning>
+  Notification URL wajib diisi agar Midtrans bisa memberitahu aplikasi ketika status pembayaran berubah.
+</Warning>
+
+<Steps>
+  <Step title="Buka Notification settings">
+    Dashboard Midtrans → **Settings → Notification**.
+  </Step>
+  <Step title="Isi HTTP Notification URL">
+    Isi dengan endpoint callback aplikasi:
+
+    ```text
+    https://domain-anda.com/api/payment/callback
+    ```
+
+    Untuk testing lokal, gunakan [ngrok](https://ngrok.com) atau tunneling serupa.
+  </Step>
+</Steps>
+
+## Konfigurasi .env
+
+```ini
+PAYMENT_GATEWAY=midtrans
+MIDTRANS_SERVER_KEY=SB-Mid-server-xxxxxxxxxxxxxxxxxxxxxxxxxxxx
+MIDTRANS_CLIENT_KEY=SB-Mid-client-xxxxxxxxxxxxxxxxxxxxxxxxxxx
+MIDTRANS_MERCHANT_ID=G822801271
+MIDTRANS_IS_PRODUCTION=false
+```
+
+| Variable | Keterangan |
+| --- | --- |
+| `PAYMENT_GATEWAY` | Gateway aktif. Biarkan `midtrans`. |
+| `MIDTRANS_SERVER_KEY` | Server Key dari dashboard. |
+| `MIDTRANS_CLIENT_KEY` | Client Key dari dashboard. |
+| `MIDTRANS_MERCHANT_ID` | Merchant ID dari dashboard. |
+| `MIDTRANS_IS_PRODUCTION` | `false` untuk sandbox, `true` untuk production. |
+
+## Testing Pembayaran
+
+Gunakan kartu kredit testing berikut di mode sandbox:
+
+| Field | Nilai |
+| --- | --- |
+| Nomor Kartu | `4811 1111 1111 1114` |
+| Bulan / Tahun | Sembarang, asalkan lebih dari sekarang |
+| CVV | `123` |
+| OTP | `112233` |
+
+<Steps>
+  <Step title="Pilih produk">
+    Buka website, pilih produk, klik checkout.
+  </Step>
+  <Step title="Snap popup muncul">
+    Popup Midtrans akan tampil dengan berbagai metode pembayaran.
+  </Step>
+  <Step title="Selesaikan pembayaran">
+    Pilih kartu kredit, isi data testing di atas, dan konfirmasi. Jika sukses, order akan berubah status ke `paid` dan file digital bisa didownload.
+  </Step>
+</Steps>
+
+## Payment Gateway Lain
+
+<Info>
+  Stripe dan Xendit sudah ada di codebase sebagai stub, namun **belum diimplementasikan**. Saat ini hanya Midtrans yang berfungsi penuh.
+</Info>

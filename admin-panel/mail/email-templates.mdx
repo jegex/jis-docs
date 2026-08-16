@@ -1,0 +1,96 @@
+---
+title: "Email Templates"
+description: "Template email transaksional multi-bahasa dengan variable placeholder"
+---
+
+Resource **Email Templates** mengelola template email transaksional yang dikirim otomatis oleh aplikasi. Ada di **Cluster: Mail**.
+
+**Lokasi:** Sidebar → **Mail** → **Email Templates**
+
+## Screenshot
+
+<Frame caption="Daftar email templates">
+  {/* TODO: masukkan screenshot list Email Templates */}
+</Frame>
+
+<Frame caption="Form create/edit email template">
+  {/* TODO: masukkan screenshot form Email Template */}
+</Frame>
+
+## Struktur Form
+
+### Field Utama
+
+| Field | Tipe | Keterangan |
+| --- | --- | --- |
+| `type` | Select (enum) | Tipe template. Lihat tabel di bawah. Live update untuk mengubah variable helper. |
+| `is_active` | Toggle | Aktifkan/nonaktifkan template. Default: `true`. |
+
+### Konten (Translatable)
+
+| Field | Tipe | Keterangan |
+| --- | --- | --- |
+| `subject` | Text (translatable) | Subject email per bahasa. |
+| `body` | Rich Editor (translatable) | Isi body email per bahasa. Plugin `SourceCode` untuk edit HTML, plugin `Link`. Min height 200px. |
+
+### Info Variables
+
+Di bawah form ditampilkan **daftar variable yang tersedia** untuk template type yang dipilih (via view `filament.info-variable-email`). Variable diformat `{{variable_name}}` di body/subject.
+
+## Template Types
+
+Enum `App\Enums\EmailTemplateType`:
+
+| Type | Value | Kapan Dikirim |
+| --- | --- | --- |
+| Welcome | `welcome` | Setelah user register/verify email. |
+| Order Confirmation | `order_confirmation` | Setelah pembayaran sukses. |
+| Download Link | `download_link` | Setelah pembayaran sukses (link download file digital). |
+| Newsletter | `newsletter` | Manual kirim via [Send Newsletter](/admin-panel/mail/send-newsletter). |
+| Password Reset | `password_reset` | User request reset password. |
+| Email Verification | `email_verification` | Setelah register, untuk verifikasi email. |
+| Admin Invitation | `admin_invitation` | Admin invite user baru via [Invitations](/admin-panel/users/invitations). |
+
+## Variable Placeholder
+
+Setiap template type punya set variable sendiri. Contoh umum:
+
+| Variable | Keterangan |
+| --- | --- |
+| `{{customer_name}}` | Nama pelanggan penerima email. |
+| `{{site_title}}` | Nama aplikasi dari `APP_NAME`. |
+| `{{order_number}}` | Nomor order (untuk order\_confirmation, download\_link). |
+| `{{order_total}}` | Total order dengan currency. |
+| `{{download_url}}` | URL download file digital (untuk download\_link). |
+| `{{reset_url}}` | URL reset password (untuk password\_reset). |
+| `{{verify_url}}` | URL verifikasi email (untuk email\_verification). |
+| `{{invitation_url}}` | URL set password (untuk admin\_invitation). |
+| `{{newsletter_content}}` | Konten newsletter (untuk newsletter). |
+
+<Info>
+  Daftar variable lengkap per type ditampilkan otomatis di form saat template type dipilih.
+</Info>
+
+## Cara Membuat/Edit Template
+
+<Steps>
+  <Step title="Buka Email Templates">
+    Sidebar → **Mail** → **Email Templates**.
+  </Step>
+  <Step title="Pilih type">
+    Pilih type template yang akan dibuat/edit. Variable placeholder akan berubah sesuai type.
+  </Step>
+  <Step title="Isi subject & body per bahasa">
+    Ketik subject dan body email untuk setiap bahasa aktif. Gunakan variable `{{...}}` sesuai daftar.
+  </Step>
+  <Step title="Aktivasi">
+    Toggle **Is Active** untuk mengaktifkan template.
+  </Step>
+  <Step title="Save">
+    Klik **Create** atau **Save**.
+  </Step>
+</Steps>
+
+<Warning>
+  Hanya boleh ada satu template aktif per type. Jika ada dua template `welcome` yang `is_active = true`, hanya salah satu yang dipakai (tergantung urutan query).
+</Warning>

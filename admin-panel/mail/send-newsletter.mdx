@@ -1,0 +1,76 @@
+---
+title: "Send Newsletter"
+description: "Kirim newsletter ke seluruh user atau user tertentu via queue"
+---
+
+Page **Send Newsletter** memungkinkan admin mengirim newsletter berdasarkan template ke seluruh user atau user tertentu. Ada di **Cluster: Mail**.
+
+**Lokasi:** Sidebar → **Mail** → **Send Newsletter**
+
+## Screenshot
+
+<Frame caption="Halaman Send Newsletter dengan preview">
+  {/* TODO: masukkan screenshot Send Newsletter page */}
+</Frame>
+
+## Prasyarat
+
+- Minimal ada satu **Email Template** dengan `type = newsletter` dan `is_active = true`. Buat di [Email Templates](/admin-panel/mail/email-templates).
+- Queue worker berjalan (jobs dikirim ke queue `emails`).
+
+## Field Form
+
+| Field | Tipe | Keterangan |
+| --- | --- | --- |
+| `template_id` | Select | Template newsletter yang aktif. Hanya menampilkan template dengan `type = newsletter` dan `is_active = true`. |
+| `send_to_all` | Toggle | Kirim ke semua user (default: `true`). |
+| `user_ids` | Select (multiple) | Pilih user tertentu. Hanya muncul jika `send_to_all = false`. |
+| `preview_locale` | Select | Bahasa preview. Options: `en`, `id`. Default: `en`. |
+
+## Preview
+
+Setelah memilih template, preview subject dan body akan tampil menggunakan variable sample:
+
+| Variable | Sample Value |
+| --- | --- |
+| `{{customer_name}}` | `John Doe` |
+| `{{site_title}}` | Nilai dari `config('app.name')` |
+| `{{newsletter_content}}` | `This is a sample newsletter content.` |
+
+Preview otomatis update saat mengubah `template_id` atau `preview_locale`.
+
+## Permission
+
+Halaman ini hanya bisa diakses user dengan permission `View:SendNewsletter`.
+
+## Cara Mengirim Newsletter
+
+<Steps>
+  <Step title="Buka Send Newsletter">
+    Sidebar → **Mail** → **Send Newsletter**.
+  </Step>
+  <Step title="Pilih template">
+    Pilih template newsletter yang aktif. Preview akan langsung muncul.
+  </Step>
+  <Step title="Cek preview">
+    Ganti `preview_locale` untuk melihat versi bahasa lain.
+  </Step>
+  <Step title="Tentukan penerima">
+    Aktifkan **Send to all** untuk ke semua user, atau matikan dan pilih user manual.
+  </Step>
+  <Step title="Klik Send">
+    Semua email dimasukkan ke queue `emails` sebagai batch job. Notifikasi "Newsletter queued for X user(s)" akan muncul.
+  </Step>
+</Steps>
+
+## Implementation
+
+Internal, halaman ini menggunakan:
+
+- **Job:** `App\Jobs\SendNewsletterEmail` per user
+- **Batch:** `Bus::batch($jobs)->onQueue('emails')->dispatch()`
+- **Service:** `App\Services\EmailService::parseTemplate()` untuk substitute variable
+
+<Warning>
+  Untuk kirim newsletter dalam jumlah besar, pastikan queue worker cukup dan rate limit provider SMTP diperhatikan. Untuk 1000\+ recipient, pertimbangkan pakai service transactional email seperti Mailgun/Postmark.
+</Warning>

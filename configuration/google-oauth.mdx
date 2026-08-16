@@ -1,0 +1,117 @@
+---
+title: "Google OAuth Login"
+description: "Setup login menggunakan akun Google via Laravel Socialite"
+---
+
+Google OAuth memungkinkan user login menggunakan akun Google mereka. Fitur ini menggunakan **Laravel Socialite**.
+
+## Buat Google Cloud Project
+
+<Steps>
+  <Step title="Buka Google Cloud Console">
+    Buka [console.cloud.google.com](https://console.cloud.google.com) dan login. Bisa pakai email biasa, tidak harus G Suite.
+  </Step>
+  <Step title="Buat project baru">
+    Klik dropdown project di kiri atas, klik **New Project**, isi nama (misalnya `CMS Shop Digital`), lalu klik **Create**.
+  </Step>
+</Steps>
+
+## Konfigurasi OAuth Consent Screen
+
+<Steps>
+  <Step title="Buka OAuth consent screen">
+    Sidebar kiri → **APIs & Services → OAuth consent screen**.
+  </Step>
+  <Step title="Pilih External">
+    Pilih **External** kemudian klik **Create**.
+  </Step>
+  <Step title="Isi App Information">
+    - **App name:** `CMS Shop Digital`
+    - **User support email:** email Anda
+    - **Logo:** opsional
+  </Step>
+  <Step title="Isi Developer Contact">
+    Isi email Anda, klik **Save and Continue**.
+  </Step>
+  <Step title="Tambahkan Scopes">
+    Klik **Add or Remove Scopes**, cari dan centang:
+
+    - `.../auth/userinfo.email`
+    - `.../auth/userinfo.profile`
+    - `openid`
+
+    Klik **Update** → **Save and Continue**.
+  </Step>
+  <Step title="Tambah Test Users">
+    Masukkan email Anda sebagai test user, klik **Save and Continue**.
+  </Step>
+  <Step title="Publish App">
+    Kembali ke halaman **OAuth consent screen**, klik **Publish App** → **Confirm**.
+  </Step>
+</Steps>
+
+## Buat OAuth Client ID
+
+<Steps>
+  <Step title="Buka Credentials">
+    Sidebar → **APIs & Services → Credentials**.
+  </Step>
+  <Step title="Create OAuth client ID">
+    Klik **Create Credentials → OAuth client ID**.
+
+    - **Application type:** Web application
+    - **Name:** `CMS Shop Digital Login`
+  </Step>
+  <Step title="Tambah Authorized Redirect URIs">
+    Klik **Add URI** dan masukkan (ganti dengan domain Anda):
+
+    ```text
+    https://domainmu.com/auth/google/callback
+    ```
+
+    Untuk local development, tambahkan juga:
+
+    ```text
+    http://localhost:8000/auth/google/callback
+    ```
+  </Step>
+  <Step title="Copy Client ID & Secret">
+    Setelah create, popup akan menampilkan Client ID dan Client Secret.
+
+    <Warning>
+      Simpan Client Secret sekarang juga. Jika terlewat, hapus credential dan buat ulang.
+    </Warning>
+  </Step>
+</Steps>
+
+## Konfigurasi .env
+
+```ini
+GOOGLE_CLIENT_ID=xxxxxxxxxx-xxxxxxxxxxxxx.apps.googleusercontent.com
+GOOGLE_CLIENT_SECRET=GOCSPX-xxxxxxxxxxxxxxxxxxx
+GOOGLE_REDIRECT_URI=https://domainmu.com/auth/google/callback
+```
+
+| Variable | Keterangan |
+| --- | --- |
+| `GOOGLE_CLIENT_ID` | Client ID dari Google Cloud Console. |
+| `GOOGLE_CLIENT_SECRET` | Client Secret dari Google Cloud Console. |
+| `GOOGLE_REDIRECT_URI` | URL callback aplikasi. Harus persis sama dengan yang didaftarkan di Google. |
+
+## Testing Google Login
+
+<Steps>
+  <Step title="Buka halaman login">
+    Buka website, klik **Login**, klik tombol **Login with Google**.
+  </Step>
+  <Step title="Pilih akun Google">
+    Anda akan diarahkan ke halaman pilih akun Google. Pilih akun yang akan digunakan.
+  </Step>
+  <Step title="Redirect balik">
+    Setelah otorisasi berhasil, Anda akan diarahkan kembali ke website dan langsung login.
+  </Step>
+</Steps>
+
+<Tip>
+  Route callback Google terdefinisi di `routes/web.php` dengan prefix `auth/google`. Controller ada di `App\Http\Controllers\Auth\GoogleLoginController`.
+</Tip>

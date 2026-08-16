@@ -1,0 +1,79 @@
+---
+title: "Admins"
+description: "User dengan akses admin panel. Kelola akses dan kredensial admin"
+---
+
+Resource **Admins** mengelola user yang memiliki akses ke admin panel Filament. Menggunakan **Spatie Permission** untuk role & permission management.
+
+**Lokasi:** Sidebar → **Admins**
+
+## Screenshot
+
+<Frame caption="Daftar admins">
+  {/* TODO: masukkan screenshot list Admins */}
+</Frame>
+
+<Frame caption="Form create/edit admin">
+  {/* TODO: masukkan screenshot form Admin */}
+</Frame>
+
+## Struktur Form
+
+### Base Form
+
+| Field | Tipe | Keterangan |
+| --- | --- | --- |
+| `name` | Text | Nama admin. Autofocus saat form dibuka. |
+| `email` | Email | Email unik. |
+| `timezone` | Select (searchable) | Timezone admin (list lengkap GMT-11 sampai GMT\+12). |
+
+### Roles
+
+| Field | Tipe | Keterangan |
+| --- | --- | --- |
+| `roles` | Select (multiple, relation) | Role yang di-assign ke admin (dari Spatie Permission). Bisa pilih lebih dari satu. Searchable & preloaded. |
+
+### Password
+
+| Field | Tipe | Keterangan |
+| --- | --- | --- |
+| `password` | Password (revealable) | Password baru. Menggunakan default password rule Laravel. Otomatis di-hash. Live validation dengan `passwordConfirmation` (same). |
+| `passwordConfirmation` | Password (revealable) | Konfirmasi password. Hanya muncul jika `password` diisi. |
+
+<Info>
+  Field `password` hanya di-dehydrate (disimpan) jika diisi. Saat edit, kosongkan untuk mempertahankan password lama.
+</Info>
+
+## Roles & Permissions
+
+Role yang tersedia bergantung pada seeder Spatie Permission. Role umum:
+
+- **Super Admin** — akses penuh ke semua resource
+- **Editor** — kelola konten (posts, pages, projects)
+- **Writer** — create/edit konten, tidak bisa publish
+
+Permission format: `View:{Resource}`, `Create:{Resource}`, `Update:{Resource}`, `Delete:{Resource}`, `Publish:{Resource}`.
+
+## Cara Menambahkan Admin
+
+<Steps>
+  <Step title="Buka Admins">
+    Sidebar → **Admins** → klik **New Admin**.
+  </Step>
+  <Step title="Isi data akun">
+    Isi name, email, dan pilih timezone.
+  </Step>
+  <Step title="Assign role">
+    Pilih satu atau lebih role yang sesuai.
+  </Step>
+  <Step title="Set password">
+    Isi password dan konfirmasi.
+  </Step>
+  <Step title="Save">
+    Klik **Create**. Admin bisa langsung login ke `/admin`.
+  </Step>
+</Steps>
+
+<Tip>
+  Untuk onboarding admin baru dengan self-service password, gunakan resource [Invitations](/admin-panel/users/invitations). Admin akan menerima email dengan link set password.
+</Tip>

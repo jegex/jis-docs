@@ -1,0 +1,99 @@
+---
+title: "Menu Items"
+description: "Menu navigasi header/footer dengan drag & drop dan multiple menu"
+---
+
+Resource **Menu Items** membangun menu navigasi (header, footer, dll) dengan drag & drop reorder dan nested menu. Menggunakan package `biostate/filament-menu-builder`.
+
+**Lokasi:** Sidebar → **Menu Items**
+
+## Screenshot
+
+<Frame caption="Halaman menu builder dengan drag & drop">
+  {/* TODO: masukkan screenshot menu builder */}
+</Frame>
+
+<Frame caption="Form create/edit menu item">
+  {/* TODO: masukkan screenshot form menu item */}
+</Frame>
+
+## Struktur Form
+
+### Field Utama
+
+| Field | Tipe | Keterangan |
+| --- | --- | --- |
+| `name` | Text (translatable) | Label menu item yang tampil di navigasi. |
+| `menu_id` | Select | Menu group tempat item ini berada (header, footer, dll). |
+| `target` | Select | Link target: `_self`, `_blank`, `_parent`, `_top`. Default: `_self`. |
+| `link_class` | Text | CSS class untuk `<a>` tag. |
+| `wrapper_class` | Text | CSS class untuk wrapper `<li>` tag. |
+
+### Fieldset: URL
+
+Field `type` menentukan bagaimana URL menu di-generate:
+
+| Type | Value | Field Tambahan |
+| --- | --- | --- |
+| **Link** | `link` | `url` (URL manual) |
+| **Route** | `route` | `route` (named route) \+ `route_parameters` (key-value) |
+| **Model** | `model` | `menuable_type` (class) \+ `menuable_id` (record) \+ `use_menuable_name` (toggle) |
+
+#### Type: Link
+
+| Field | Keterangan |
+| --- | --- |
+| `url` | URL absolut atau relatif (misal `/tentang-kami`, `https://example.com`). |
+
+#### Type: Route
+
+| Field | Keterangan |
+| --- | --- |
+| `route` | Named route Laravel (auto-suggest dari registered routes, mengecualikan route yang di-exclude di config). |
+| `route_parameters` | Key-value pair untuk parameter route (misal `{product}`). Helper text menampilkan parameter yang dibutuhkan. |
+
+#### Type: Model
+
+| Field | Keterangan |
+| --- | --- |
+| `menuable_type` | Class model yang akan di-link (dari `config('filament-menu-builder.models')`). |
+| `menuable_id` | Record spesifik dari model. Searchable dengan `filamentSearch`. |
+| `use_menuable_name` | Jika `true`, label menu otomatis pakai nama record (bukan field `name`). |
+
+### Field Global
+
+| Field | Keterangan |
+| --- | --- |
+| `parameters` | Key-value pairs custom yang bisa dipakai di theme (misal `icon`, `badge`). Parameter yang usable didefinisikan di config. |
+
+## Cara Menambahkan Menu Item
+
+<Steps>
+  <Step title="Buka Menu Items">
+    Sidebar → **Menu Items**.
+  </Step>
+  <Step title="Pilih menu group">
+    Klik menu yang ingin diedit (misal `Header Menu`).
+  </Step>
+  <Step title="Tambah item">
+    Klik **Add Item**. Isi name per bahasa.
+  </Step>
+  <Step title="Pilih tipe URL">
+    Pilih Link / Route / Model sesuai kebutuhan, isi field yang muncul.
+  </Step>
+  <Step title="Save">
+    Klik **Create**. Drag & drop untuk reorder atau nested.
+  </Step>
+</Steps>
+
+## Tabel List
+
+| Kolom | Searchable | Sortable |
+| --- | --- | --- |
+| `name` | ✅ | ✅ |
+| `url` | – | – |
+| `menu.name` | – | – |
+
+<Tip>
+  Gunakan **Type: Route** ketimbang **Link** untuk URL internal agar link tetap valid saat URL translation berubah antar bahasa.
+</Tip>

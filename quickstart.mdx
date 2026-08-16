@@ -1,47 +1,102 @@
 ---
 title: "Quickstart"
-description: "Begin with a guide on the fastest path to a successful outcome"
+description: "Jalankan JIS di komputer lokal dalam hitungan menit"
 ---
 
-Describe how someone begins using your product. What is the first thing they need to do? Are there any prerequisites?
-
-A quickstart should take someone from zero to using your product. They'll get a quick win and a sense of what they can accomplish.
+Panduan ini membawa Anda dari clone repository sampai aplikasi berjalan di `http://localhost:8000`.
 
 ## Prerequisites
 
-Before you begin, you must have:
+Pastikan komponen berikut sudah terpasang di komputer Anda:
 
-- Requirement one (for example, Node.js 18+, a free account, an API key)
-- Requirement two (for example, a compatible device, a compatible browser, a compatible operating system)
+| Komponen | Versi Minimal |
+| --- | --- |
+| PHP | 8.3 atau 8.4 |
+| Composer | 2.x |
+| MySQL | 8.0\+ / MariaDB 10.6\+ |
+| Node.js | 20\+ |
+| NPM | 10\+ |
 
-## Get started
+### PHP Extensions
+
+Pastikan extension berikut aktif:
+
+```text
+BCMath, Ctype, Fileinfo, JSON, Mbstring, OpenSSL,
+PDO, MySQL, Tokenizer, XML, GD, Exif, Zip
+```
+
+## Setup Lokal
 
 <Steps>
-  <Step title="Install">
-    Describe how to install your product or sign up.
-
+  <Step title="Clone repository">
     ```bash
-    npm install your-package
+    git clone https://github.com/jegex/jis.git cms-shop
+    cd cms-shop
     ```
   </Step>
-  <Step title="Configure">
-    Describe any setup or configuration needed before first use.
-
+  <Step title="Install dependency PHP">
     ```bash
-    your-cli init
+    composer install
     ```
   </Step>
-  <Step title="Run it">
-    Show the first thing a user does to see it working.
-
+  <Step title="Buat file .env">
     ```bash
-    your-cli start
+    cp .env.example .env
+    php artisan key:generate
     ```
+
+    Edit `.env` dan sesuaikan konfigurasi database. Lihat [Konfigurasi Database](/configuration/database) untuk detail.
+  </Step>
+  <Step title="Migrasi database + seed data">
+    ```bash
+    php artisan migrate --seed
+    ```
+  </Step>
+  <Step title="Buat symlink storage">
+    ```bash
+    php artisan storage:link
+    ```
+  </Step>
+  <Step title="Install & build frontend">
+    ```bash
+    npm install
+    npm run build
+    ```
+  </Step>
+  <Step title="Jalankan development server">
+    ```bash
+    composer run dev
+    ```
+
+    Perintah ini menjalankan 4 service sekaligus: web server, queue worker, log viewer, dan Vite dev server.
   </Step>
 </Steps>
 
-<Tip>
-  Give people a way to get help. This could be a link to a support page, a chat with a customer support agent, or a forum for your product.
+Akses aplikasi di browser: [http://localhost:8000](http://localhost:8000)
 
-  Example: Need help? Reach out to us at [support@yourcompany.com](mailto:support@yourcompany.com).
+Akses admin panel di: [http://localhost:8000/login](http://localhost:8000/login)
+
+## Langkah Berikutnya
+
+<CardGroup cols={2}>
+  <Card title="Konfigurasi Midtrans" icon="credit-card" href="/configuration/midtrans">
+    Aktifkan payment gateway untuk menerima pembayaran.
+  </Card>
+
+  <Card title="Google OAuth Login" icon="google" href="/configuration/google-oauth">
+    Setup login menggunakan akun Google.
+  </Card>
+
+  <Card title="Setting Email SMTP" icon="envelope" href="/configuration/email">
+    Konfigurasi email transaksional (order confirmation, reset password).
+  </Card>
+
+  <Card title="Perintah Development" icon="terminal" href="/development/commands">
+    Referensi perintah artisan yang sering digunakan.
+  </Card>
+</CardGroup>
+
+<Tip>
+  Untuk development tanpa mengirim email beneran, set `MAIL_MAILER=log` di `.env`. Semua email akan ditulis ke `storage/logs/laravel.log`.
 </Tip>

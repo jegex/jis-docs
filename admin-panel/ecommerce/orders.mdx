@@ -1,0 +1,93 @@
+---
+title: "Orders"
+description: "Riwayat order pelanggan lengkap dengan status pembayaran dan payment log"
+---
+
+Resource **Orders** menampilkan semua order yang masuk, baik dari user terdaftar maupun guest checkout.
+
+**Lokasi:** Sidebar → **Orders**
+
+## Screenshot
+
+<Frame caption="Daftar orders">
+  {/* TODO: masukkan screenshot list Orders */}
+</Frame>
+
+<Frame caption="Detail order dan payment log">
+  {/* TODO: masukkan screenshot form Order + Payments relation manager */}
+</Frame>
+
+## Struktur Form
+
+### Section: Details
+
+| Field | Tipe | Keterangan |
+| --- | --- | --- |
+| `guest_email` | Email | Email jika order dari guest (tanpa akun). |
+| `guest_name` | Text | Nama guest. |
+| `user_id` | Select | User terdaftar (jika bukan guest). |
+| `status` | Select (enum) | Status order. Lihat tabel di bawah. |
+| `coupon_id` | Select | Kupon yang di-apply. |
+| `notes` | Textarea | Catatan internal (opsional, max 1000 karakter). |
+
+### Section: Pricing
+
+| Field | Tipe | Keterangan |
+| --- | --- | --- |
+| `currency_code` | Select (relation) | Mata uang order. Default: `IDR`. |
+| `subtotal` | Number | Subtotal sebelum diskon. |
+| `discount` | Number | Nominal diskon dari kupon. Default: `0`. |
+| `total` | Number | Total akhir yang dibayar. |
+
+### Panel Info (Sidebar)
+
+Saat mode edit, sidebar menampilkan:
+
+- **Order date** (`created_at` — diffForHumans)
+- **Last modified at** (`updated_at` — diffForHumans)
+
+## Order Status
+
+Status order menggunakan enum `App\Enums\OrderStatus`:
+
+| Status | Value | Warna Badge | Keterangan |
+| --- | --- | --- | --- |
+| Pending | `pending` | Warning | Order baru dibuat, belum ada aksi pembayaran. |
+| Creating Payment | `creating_payment` | Gray | Sistem sedang membuat transaction Midtrans. |
+| Awaiting Payment | `awaiting_payment` | Warning | Snap popup sudah muncul, menunggu pelanggan bayar. |
+| Paid | `paid` | Success | Pembayaran sukses, file digital bisa didownload. |
+| Failed | `failed` | Danger | Pembayaran gagal. |
+| Expired | `expired` | Gray | Order kadaluwarsa (tidak dibayar dalam batas waktu). |
+| Refunded | `refunded` | Info | Order di-refund. |
+
+## Relation Manager: Payments
+
+Di halaman detail order, tersedia **Payments Relation Manager** yang menampilkan payment log dari Midtrans:
+
+- `transaction_id` — ID transaksi Midtrans
+- `status` — status callback (settlement, pending, deny, expire, cancel)
+- `payload` — raw JSON dari webhook
+- `created_at` — waktu callback diterima
+
+<Info>
+  Payment log tidak boleh diedit manual. Data ini terisi otomatis dari webhook `POST /api/payment/callback`.
+</Info>
+
+## Cara Kerja Order (Ringkas)
+
+<Steps>
+  <Step title="User checkout">
+    Order dibuat dengan status `pending`.
+  </Step>
+  <Step title="Snap dibuka">
+    Status berubah ke `creating_payment`, lalu `awaiting_payment`.
+  </Step>
+  <Step title="Callback dari Midtrans">
+    Webhook update status ke `paid`, `failed`, atau `expired` sesuai hasil pembayaran.
+  </Step>
+  <Step title="File digital tersedia">
+    Setelah status `paid`, user bisa download file dari **Customer Dashboard → Downloads**.
+  </Step>
+</Steps>
+
+Untuk alur lengkap, lihat [Payment & Order Flow](/features/payments).

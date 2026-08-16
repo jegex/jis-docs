@@ -1,0 +1,77 @@
+---
+title: "Currencies"
+description: "Master mata uang dengan nilai tukar dinamis untuk fitur multi-currency"
+---
+
+Resource **Currencies** mengelola master mata uang yang bisa dipilih pelanggan. Setiap currency punya `exchange_rate` yang dipakai untuk konversi harga.
+
+**Lokasi:** Sidebar → **Currencies**
+
+## Screenshot
+
+<Frame caption="Daftar currencies">
+  {/* TODO: masukkan screenshot list Currencies */}
+</Frame>
+
+<Frame caption="Form create/edit currency">
+  {/* TODO: masukkan screenshot form Currency */}
+</Frame>
+
+## Struktur Form
+
+### Section: Details
+
+| Field | Tipe | Keterangan |
+| --- | --- | --- |
+| `code` | Text (max 3) | Kode ISO currency (misal `IDR`, `USD`, `EUR`). Harus unik. |
+| `name` | Text | Nama lengkap (misal `Indonesian Rupiah`). |
+| `symbol` | Text (max 10) | Simbol currency (misal `Rp`, `$`, `€`). |
+| `exchange_rate` | Number (step 0.0001) | Nilai tukar terhadap currency default. Default: `1`. |
+| `decimal_place` | Number (0-4) | Jumlah desimal yang ditampilkan. Default: `0`. |
+| `is_default` | Toggle | Set sebagai currency default aplikasi. Hanya satu currency yang bisa jadi default. |
+
+## Exchange Rate
+
+Nilai tukar dihitung **relatif terhadap currency default**. Contoh dengan default = `IDR`:
+
+| Code | Exchange Rate | Contoh Konversi |
+| --- | --- | --- |
+| IDR | 1 | Base currency |
+| USD | 0.000063 | Rp 100.000 → \$6.30 |
+| EUR | 0.000058 | Rp 100.000 → €5.80 |
+
+<Warning>
+  Pembayaran ke Midtrans **selalu diproses dalam IDR**. Currency lain hanya untuk display frontend. Sistem otomatis convert ke IDR saat membuat Snap transaction.
+</Warning>
+
+## Decimal Places
+
+| Currency | Decimal | Contoh |
+| --- | --- | --- |
+| IDR | 0 | Rp 100.000 |
+| USD | 2 | \$6.30 |
+| JPY | 0 | ¥680 |
+
+## Cara Menambahkan Currency
+
+<Steps>
+  <Step title="Buka Currencies">
+    Sidebar → **Currencies** → klik **New Currency**.
+  </Step>
+  <Step title="Isi kode & nama">
+    Ketik kode ISO (3 huruf) dan nama lengkap.
+  </Step>
+  <Step title="Set symbol & decimal">
+    Isi simbol yang ditampilkan dan jumlah desimal.
+  </Step>
+  <Step title="Isi exchange rate">
+    Isi nilai tukar terhadap default currency. Update rate secara berkala jika volatile.
+  </Step>
+  <Step title="Save">
+    Klik **Create**.
+  </Step>
+</Steps>
+
+<Tip>
+  Jangan ubah `is_default` currency sembarangan setelah production. Semua exchange\_rate relatif terhadap default, jadi mengubahnya berarti perlu update semua rate.
+</Tip>

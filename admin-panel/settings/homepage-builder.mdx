@@ -1,0 +1,135 @@
+---
+title: "Homepage Builder"
+description: "Bangun homepage secara dinamis dari kombinasi blok yang bisa di-reorder dan aktifkan/nonaktifkan"
+---
+
+Page **Homepage Builder** adalah page-level setting yang memungkinkan admin menyusun homepage dari **blok** dinamis (hero, stats, featured products, testimonials, dll). Menggunakan Filament **Builder** field dengan drag & drop.
+
+**Lokasi:** Sidebar → **Settings** → **Homepage**
+
+## Screenshot
+
+<Frame caption="Halaman Homepage Builder dengan blok collapsible">
+  {/* TODO: masukkan screenshot Homepage Builder */}
+</Frame>
+
+<Frame caption="Detail salah satu blok (misal Hero atau Featured Products)">
+  {/* TODO: masukkan screenshot detail blok */}
+</Frame>
+
+## Cara Kerja
+
+Semua blok ada di dalam satu field `homepage_blocks`. Admin bisa:
+
+- **Add Section** — tambah blok baru dari daftar tipe
+- **Reorder** — drag & drop untuk mengatur urutan
+- **Collapse/Expand** — fokus edit blok tertentu
+- **Toggle Active** — nonaktifkan blok tanpa menghapus
+
+## Tipe Blok Tersedia
+
+| Blok | Icon | Deskripsi |
+| --- | --- | --- |
+| **Hero** | home | Banner utama dengan title, subtitle, badge, dua CTA button, dan hero image. |
+| **Stats** | chart-bar | Statistik dengan icon, nilai numerik, suffix (\+, %), dan label per bahasa. |
+| **Featured** | star | Featured services / highlight dengan section header dan repeater. |
+| **Services** | wrench | Daftar layanan yang ditawarkan. |
+| **Projects** | briefcase | Portfolio project dengan filter tipe. |
+| **Featured Products** | shopping-bag | Produk unggulan dengan filter kategori. |
+| **Latest Posts** | newspaper | Artikel terbaru dengan filter kategori. |
+| **CTA** | megaphone | Call-to-action section dengan judul, deskripsi, dan button. |
+| **Testimonials** | chat-bubble-oval-left-ellipsis | Testimoni pelanggan dengan foto, nama, jabatan, dan quote. |
+| **Partners** | building-office | Logo partner / client. |
+
+## Field Umum Semua Blok
+
+| Field | Tipe | Keterangan |
+| --- | --- | --- |
+| `is_active` | Toggle | Aktifkan / nonaktifkan blok. Blok non-aktif tidak render di frontend. |
+
+Blok yang punya section header umumnya punya:
+
+| Field | Tipe | Keterangan |
+| --- | --- | --- |
+| `label` | Text (translatable) | Label kecil di atas section title. |
+| `title` | Text (translatable) | Judul section. |
+| `description` | Textarea (translatable) | Deskripsi section. |
+
+## Blok: Hero (Contoh Detail)
+
+### Toggle & Konten
+
+| Field | Tipe | Keterangan |
+| --- | --- | --- |
+| `is_active` | Toggle | Aktifkan blok. |
+| `badge_enabled` | Toggle | Tampilkan badge di atas title. |
+
+### Hero Content (Translatable)
+
+| Field | Tipe | Keterangan |
+| --- | --- | --- |
+| `badge` | Text (translatable) | Text badge. Muncul jika `badge_enabled = true`. |
+| `title` | Text (translatable) | Judul utama hero (required). |
+| `subtitle` | Textarea (translatable) | Subjudul, 2 rows. |
+
+### Hero Buttons (Translatable)
+
+| Field | Tipe | Keterangan |
+| --- | --- | --- |
+| `primary_button_label` | Text (translatable) | Label button utama. |
+| `secondary_button_label` | Text (translatable) | Label button sekunder. |
+
+### Hero Buttons URL
+
+| Field | Default | Keterangan |
+| --- | --- | --- |
+| `primary_button_url` | `#services` | URL button utama. |
+| `secondary_button_url` | `#contact` | URL button sekunder. |
+
+### Hero Image
+
+| Field | Default | Keterangan |
+| --- | --- | --- |
+| `image` | `images/hero.png` | Path hero image relatif dari `public/`. |
+
+## Blok: Stats (Contoh Detail)
+
+Repeater `items` (default 4 items, reorderable):
+
+| Field | Tipe | Keterangan |
+| --- | --- | --- |
+| `icon` | Select (searchable) | Icon Heroicon dari daftar preset. |
+| `value` | Number | Nilai statistik. |
+| `suffix` | Text | Suffix (misal `+`, `%`, `K`). |
+| `label` | Text (translatable) | Label statistik per bahasa. |
+
+## Cara Membangun Homepage
+
+<Steps>
+  <Step title="Buka Homepage">
+    Sidebar → **Settings** → **Homepage**.
+  </Step>
+  <Step title="Add Section">
+    Klik **Add Section**, pilih tipe blok yang mau ditambah.
+  </Step>
+  <Step title="Isi konten blok">
+    Setiap tipe blok punya field sendiri. Isi konten per bahasa untuk field translatable.
+  </Step>
+  <Step title="Toggle Active">
+    Pastikan **Is Active** ON untuk blok yang mau tampil.
+  </Step>
+  <Step title="Reorder">
+    Drag handle di kiri blok untuk mengatur urutan tampil di homepage.
+  </Step>
+  <Step title="Save">
+    Klik **Save**. Homepage frontend akan otomatis update.
+  </Step>
+</Steps>
+
+<Tip>
+  Blok yang di-toggle **Inactive** tetap disimpan di database. Bisa diaktifkan lagi tanpa mengisi ulang konten.
+</Tip>
+
+<Info>
+  Untuk daftar icon lengkap yang bisa dipilih di field `icon`, cek dropdown Heroicon di form. Ada 25\+ icon preset (Cube, Bolt, Star, Rocket, dll).
+</Info>

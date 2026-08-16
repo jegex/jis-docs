@@ -1,0 +1,75 @@
+---
+title: "Email / SMTP"
+description: "Konfigurasi email transaksional (order, download link, reset password)"
+---
+
+JIS mengirim berbagai email transaksional: konfirmasi order, download link produk digital, reset password, welcome email, dan newsletter.
+
+## Konfigurasi .env
+
+```ini
+MAIL_MAILER=smtp
+MAIL_HOST=smtp.hostgator.com
+MAIL_PORT=465
+MAIL_USERNAME=email@domainmu.com
+MAIL_PASSWORD=password_email
+MAIL_ENCRYPTION=ssl
+MAIL_FROM_ADDRESS=email@domainmu.com
+MAIL_FROM_NAME="${APP_NAME}"
+```
+
+| Variable | Keterangan |
+| --- | --- |
+| `MAIL_MAILER` | Driver mail. Gunakan `smtp` untuk production, `log` untuk development. |
+| `MAIL_HOST` | Hostname SMTP server. |
+| `MAIL_PORT` | `465` untuk SSL, `587` untuk TLS. |
+| `MAIL_USERNAME` | Email pengirim. |
+| `MAIL_PASSWORD` | Password email. |
+| `MAIL_ENCRYPTION` | `ssl` atau `tls`, sesuaikan dengan port. |
+| `MAIL_FROM_ADDRESS` | Alamat email pengirim yang tampil ke penerima. |
+| `MAIL_FROM_NAME` | Nama pengirim (default: nama aplikasi). |
+
+## Setup Email Hosting di cPanel
+
+<Steps>
+  <Step title="Cek Email Deliverability">
+    Buka cPanel → **Email Deliverability**, cari domain Anda, klik **Manage**. Pastikan SPF, DKIM, dan DMARC sudah aktif agar email tidak masuk spam.
+  </Step>
+  <Step title="Buat Email Account">
+    Buka cPanel → **Email Accounts**, buat email baru (contoh: `info@domainmu.com`) dengan password yang kuat.
+  </Step>
+  <Step title="Konfigurasi SMTP">
+    Cek dokumentasi hosting untuk mendapatkan hostname SMTP, port, dan enkripsi yang didukung. Isi ke `.env` sesuai template di atas.
+  </Step>
+  <Step title="Testing pengiriman">
+    Coba fitur register user baru atau reset password. Email harusnya masuk ke inbox penerima.
+  </Step>
+</Steps>
+
+## Development Mode
+
+Untuk development, gunakan driver `log` agar email tidak benar-benar terkirim:
+
+```ini
+MAIL_MAILER=log
+```
+
+Semua email akan ditulis ke `storage/logs/laravel.log`. Buka file tersebut untuk melihat konten email.
+
+<Tip>
+  Alternatif lain untuk development: gunakan [Mailtrap](https://mailtrap.io) atau [Mailpit](https://mailpit.axllent.org/) untuk menangkap email di sandbox tanpa mengirim ke penerima asli.
+</Tip>
+
+## Queue untuk Email
+
+JIS menggunakan queue untuk mengirim email agar tidak memblokir request. Pastikan queue worker berjalan:
+
+```bash
+# Development
+php artisan queue:listen
+
+# Production
+php artisan queue:work --sleep=3 --tries=3
+```
+
+Lihat [Perintah Development](/development/commands) untuk detail queue worker di production.

@@ -1,0 +1,60 @@
+---
+title: "Product Categories"
+description: "Kategori khusus untuk produk digital"
+---
+
+Resource **Product Categories** mengelola kategori khusus untuk produk (terpisah dari kategori blog). Kategori disimpan di tabel `categories` dengan `type = product`.
+
+**Lokasi:** Sidebar → **Product Categories**
+
+## Screenshot
+
+<Frame caption="Daftar product categories">
+  {/* TODO: masukkan screenshot list Product Categories */}
+</Frame>
+
+<Frame caption="Form create/edit product category">
+  {/* TODO: masukkan screenshot form Product Category */}
+</Frame>
+
+## Struktur Form
+
+Form menggunakan `CategoryForm` bersama, dengan `type` otomatis di-set ke `product`.
+
+### Section: Details
+
+| Field | Tipe | Keterangan |
+| --- | --- | --- |
+| `name` | Text (translatable) | Nama kategori. Isi per bahasa via translatable tabs. Auto-generate slug. |
+| `description` | Textarea (translatable) | Deskripsi kategori per bahasa. |
+| `slug` | Text | URL slug unik dalam scope `type = product`. |
+| `is_published` | Toggle | Kategori tampil di frontend (default: `true`). |
+
+### Section: SEO
+
+Sama seperti resource lain, menggunakan `SeoSchema` bersama.
+
+## Cara Menambahkan Kategori
+
+<Steps>
+  <Step title="Buka Product Categories">
+    Sidebar → **Product Categories** → klik **New**.
+  </Step>
+  <Step title="Isi nama per bahasa">
+    Isi field `name` untuk setiap bahasa yang aktif. Slug akan otomatis di-generate dari nama bahasa aktif.
+  </Step>
+  <Step title="Toggle Published">
+    Aktifkan **Published** untuk tampil di frontend katalog.
+  </Step>
+  <Step title="Save">
+    Klik **Create**.
+  </Step>
+</Steps>
+
+## Relation Manager
+
+Di halaman edit kategori, tersedia **Products Relation Manager** yang menampilkan semua produk dalam kategori tersebut. Bisa create/edit produk langsung dari sini.
+
+<Info>
+  Slug divalidasi unik hanya dalam scope `type = product`. Jadi kategori produk dan kategori blog bisa punya slug yang sama.
+</Info>

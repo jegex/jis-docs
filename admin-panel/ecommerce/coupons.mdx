@@ -1,0 +1,78 @@
+---
+title: "Coupons"
+description: "Kode kupon diskon (fixed atau percentage) dengan batas pemakaian"
+---
+
+Resource **Coupons** mengelola kode diskon yang bisa di-apply pelanggan di halaman checkout.
+
+**Lokasi:** Sidebar → **Coupons**
+
+## Screenshot
+
+<Frame caption="Daftar coupons">
+  {/* TODO: masukkan screenshot list Coupons */}
+</Frame>
+
+<Frame caption="Form create/edit coupon">
+  {/* TODO: masukkan screenshot form Coupon */}
+</Frame>
+
+## Struktur Form
+
+### Section: Kupon Utama
+
+| Field | Tipe | Keterangan |
+| --- | --- | --- |
+| `code` | Text | Kode kupon (misal `PROMO2025`). Harus unik. |
+| `type` | Select (enum) | Tipe diskon: `fixed` (nominal) atau `percentage` (persen). |
+| `value` | Number | Nilai diskon. Prefix menyesuaikan tipe: `%` untuk percentage, kode currency default untuk fixed. |
+| `max_uses` | Number | Batas pemakaian total (semua user). Set `0` untuk unlimited. Default: `0`. |
+| `expires_at` | DateTime | Tanggal & jam kadaluwarsa. Kosong = tidak pernah kadaluwarsa. |
+
+### Section: Conditions
+
+| Field | Tipe | Keterangan |
+| --- | --- | --- |
+| `applies_to` | Select (enum) | Scope: `all` (semua produk) atau `specific_product` (produk tertentu). |
+| `product_id` | Select (relation) | Produk spesifik. Diisi hanya jika `applies_to = specific_product`. |
+
+## Tipe Diskon
+
+| Type | Value | Contoh |
+| --- | --- | --- |
+| `fixed` | Nominal potongan | `50000` → potongan Rp 50.000 |
+| `percentage` | Persentase potongan | `10` → potongan 10% dari subtotal |
+
+## Applies To
+
+| Value | Keterangan |
+| --- | --- |
+| `all` | Kupon berlaku untuk semua produk. |
+| `specific_product` | Kupon hanya berlaku untuk produk yang dipilih di `product_id`. |
+
+## Cara Membuat Kupon
+
+<Steps>
+  <Step title="Buka Coupons">
+    Sidebar → **Coupons** → klik **New Coupon**.
+  </Step>
+  <Step title="Isi code">
+    Ketik kode yang akan di-input pelanggan (misal `NEWYEAR2026`). Case-insensitive di frontend.
+  </Step>
+  <Step title="Pilih tipe & nilai">
+    Pilih `fixed` atau `percentage`, isi `value` sesuai tipe.
+  </Step>
+  <Step title="Batas pemakaian">
+    Set `max_uses` untuk batas total. Set `expires_at` untuk tanggal berakhir.
+  </Step>
+  <Step title="Scope produk">
+    Pilih `applies_to`. Jika `specific_product`, pilih produknya di `product_id`.
+  </Step>
+  <Step title="Save">
+    Klik **Create**.
+  </Step>
+</Steps>
+
+<Tip>
+  Field `max_uses` menghitung total pemakaian lintas user. Kupon otomatis di-reject jika `usage_count >= max_uses` atau `now() > expires_at`.
+</Tip>

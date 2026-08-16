@@ -1,0 +1,289 @@
+---
+title: "Deployment ke cPanel"
+description: "Panduan lengkap deploy JIS ke shared hosting cPanel"
+---
+
+Panduan ini menjelaskan cara deploy JIS ke server cPanel dengan struktur folder yang aman (file Laravel di luar `public_html`).
+
+## Struktur Folder di Server
+
+Untuk keamanan, file Laravel diletakkan **di luar `public_html`**. Hanya folder `public/` yang masuk ke document root.
+
+```text
+/home/username/
+├── laravel/                              # Semua file Laravel (di luar public_html)
+│   ├── app/
+│   ├── bootstrap/
+│   ├── config/
+│   ├── database/
+│   ├── resources/
+│   ├── routes/
+│   ├── storage/
+│   ├── vendor/
+│   ├── .env
+│   ├── artisan
+│   └── composer.json
+│
+└── public_html/                          # ✅ Document Root cPanel
+    ├── index.php                         # Diedit — path ke ../laravel/
+    ├── .htaccess
+    ├── build/                            # Vite build output
+    ├── assets/
+    ├── favicon.ico
+    ├── robots.txt
+    └── storage/ -> ../laravel/storage/app/public   # Symlink
+```
+
+## Isi `public_html/index.php`
+
+Edit `index.php` agar path mengarah ke folder `laravel/`:
+
+```php
+<?php
+
+declare(strict_types=1);
+
+use Illuminate\Foundation\Application;
+use Illuminate\Http\Request;
+
+define('LARAVEL_START', microtime(true));
+
+if (file_exists($maintenance = __DIR__.'/../laravel/storage/framework/maintenance.php')) {
+    require $maintenance;
+}
+
+require __DIR__.'/../laravel/vendor/autoload.php';
+
+/** @var Application $app */
+$app = require_once __DIR__.'/../laravel/bootstrap/app.php';
+
+$app->handleRequest(Request::capture());
+```
+
+**Perubahan dari default:**
+
+- `__DIR__.'/../storage/...'` → `__DIR__.'/../laravel/storage/...'`
+- `__DIR__.'/../vendor/...'` → `__DIR__.'/../laravel/vendor/...'`
+- `__DIR__.'/../bootstrap/...'` → `__DIR__.'/../laravel/bootstrap/...'`
+
+## Upload File
+
+### Opsi A: Git Deployment (Rekomendasi)
+
+<Steps>
+  <Step title="Login SSH via cPanel Terminal">
+    ```bash
+    cd ~/laravel
+    git clone <repository-url> .
+    ```
+  </Step>
+  <Step title="Copy isi public/ ke public_html/">
+    ```bash
+    cp -r public/* ../public_html/
+    cp public/.htaccess ../public_html/
+    ```
+  </Step>
+  <Step title="Hapus folder public/">
+    ```bash
+    rm -rf public
+    ```
+  </Step>
+</Steps>
+
+### Opsi B: Upload Manual
+
+<Steps>
+  <Step title="Upload project">
+    Upload seluruh project (kecuali `vendor/`, `node_modules/`, `.env`) ke `~/laravel/`.
+  </Step>
+  <Step title="Pindahkan public/">
+    ```bash
+    cp -r ~/laravel/public/* ~/public_html/
+    cp ~/laravel/public/.htaccess ~/public_html/
+    ```
+  </Step>
+  <Step title="Hapus public/ dari laravel">
+    ```bash
+    rm -rf ~/laravel/public
+    ```
+  </Step>
+</Steps>
+
+### Setup Symlink Storage
+
+```bash
+cd ~/public_html
+ln -s ../laravel/storage/app/public storage
+```
+
+## Setup Environment Production
+
+Buat file `.env` di `~/laravel/.env`:
+
+```ini
+APP_NAME="CMS Shop Digital"
+APP_ENV=production
+APP_KEY=base64:...
+APP_DEBUG=false
+APP_URL=https://domain-anda.com
+
+DB_CONNECTION=mysql
+DB_HOST=localhost
+DB_PORT=3306
+DB_DATABASE=nama_database
+DB_USERNAME=user_database
+DB_PASSWORD=password_database
+
+SESSION_DRIVER=database
+SESSION_LIFETIME=120
+SESSION_SECURE_COOKIE=true
+
+CACHE_STORE=database
+QUEUE_CONNECTION=database
+
+PAYMENT_GATEWAY=midtrans
+MIDTRANS_IS_PRODUCTION=true
+MIDTRANS_SERVER_KEY=Mid-server-...
+MIDTRANS_CLIENT_KEY=Mid-client-...
+MIDTRANS_MERCHANT_ID=G...
+
+LOG_LEVEL=error
+```
+
+<Warning>
+  Set `APP_DEBUG=false` di production. Jangan pernah expose stack trace ke user.
+</Warning>
+
+## Install Dependencies & Build
+
+Jalankan dari folder `~/laravel/`:
+
+```bash
+cd ~/laravel
+
+# Install PHP dependencies (tanpa dev)
+composer install --optimize-autoloader --no-dev
+
+# Generate APP_KEY (hanya sekali)
+php artisan key:generate
+
+# Migrasi database
+php artisan migrate --force
+
+# Seed data awal
+php artisan db:seed --force
+
+# Cache untuk production
+php artisan config:cache
+php artisan route:cache
+php artisan event:cache
+php artisan icons:cache
+
+# Install & build frontend
+npm install --ignore-scripts
+npm run build
+```
+
+<Info>
+  `php artisan storage:link` **tidak perlu** dijalankan karena symlink sudah dibuat manual di step sebelumnya.
+</Info>
+
+## Setup Cron Job
+
+Buka **cPanel → Cron Jobs** dan tambahkan:
+
+### Laravel Scheduler
+
+```cron
+* * * * * /usr/local/bin/php /home/username/laravel/artisan schedule:run >> /dev/null 2>&1
+```
+
+### Queue Worker
+
+```cron
+* * * * * /usr/local/bin/php /home/username/laravel/artisan queue:work --sleep=3 --tries=3 --stop-when-empty >> /dev/null 2>&1
+```
+
+<Info>
+  `--stop-when-empty` memastikan worker berhenti setelah semua job selesai. Aman untuk shared hosting. Untuk VPS, ganti dengan `--max-time=3600`.
+</Info>
+
+Sesuaikan `username` dengan username cPanel Anda.
+
+## File Permission
+
+```bash
+cd ~/laravel
+
+find . -type f -exec chmod 644 {} \;
+find . -type d -exec chmod 755 {} \;
+
+# Storage & cache bisa ditulis
+chmod -R 775 storage bootstrap/cache
+
+# Pastikan owner benar
+chown -R username:username ~/laravel
+chown -R username:username ~/public_html
+```
+
+## PHP Settings
+
+Di **cPanel → MultiPHP INI Editor**:
+
+| Setting | Value |
+| --- | --- |
+| `upload_max_filesize` | 64M |
+| `post_max_size` | 64M |
+| `max_execution_time` | 300 |
+| `memory_limit` | 256M |
+
+Atau via file `~/laravel/.user.ini`:
+
+```ini
+upload_max_filesize = 64M
+post_max_size = 64M
+max_execution_time = 300
+memory_limit = 256M
+```
+
+## SSL / HTTPS
+
+<Steps>
+  <Step title="Install SSL certificate">
+    Buka **cPanel → SSL/TLS** dan install SSL certificate (bisa via AutoSSL).
+  </Step>
+  <Step title="Set secure cookie">
+    Pastikan `.env` memiliki `SESSION_SECURE_COOKIE=true`.
+  </Step>
+  <Step title="Force HTTPS">
+    Aktifkan **Force HTTPS Redirect** di cPanel Domains.
+  </Step>
+</Steps>
+
+## Update / Redeploy
+
+Untuk redeploy setelah ada perubahan kode:
+
+```bash
+cd ~/laravel
+
+# Pull perubahan
+git pull origin main
+
+# Install dependency jika ada perubahan
+composer install --optimize-autoloader --no-dev
+npm install --ignore-scripts
+npm run build
+
+# Migrasi database jika ada perubahan
+php artisan migrate --force
+
+# Copy public/ ke public_html/ jika ada asset baru
+cp -r public/build/* ../public_html/build/
+
+# Refresh cache
+php artisan optimize:clear
+php artisan config:cache
+php artisan route:cache
+php artisan event:cache
+```

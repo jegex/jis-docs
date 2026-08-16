@@ -1,0 +1,102 @@
+---
+title: "Products"
+description: "Kelola produk digital dengan file yang bisa didownload pelanggan"
+---
+
+Resource **Products** digunakan untuk mengelola produk digital yang dijual: dokumen, desain, blueprint, dan file teknis lainnya.
+
+**Lokasi:** Sidebar → **Products**
+
+## Screenshot
+
+<Frame caption="Daftar produk di admin panel">
+  {/* TODO: masukkan screenshot list Products */}
+</Frame>
+
+<Frame caption="Form create/edit produk">
+  {/* TODO: masukkan screenshot form Products */}
+</Frame>
+
+## Struktur Form
+
+Form produk dibagi ke dalam beberapa section:
+
+### Section: General
+
+| Field | Tipe | Keterangan |
+| --- | --- | --- |
+| `title` | Text (translatable) | Nama produk. Auto-generate `slug` saat pertama diisi. |
+| `slug` | Text | URL slug unik. Auto dari title, bisa diedit manual. |
+| `short_description` | Textarea | Deskripsi singkat untuk kartu produk / meta. |
+| `description` | Rich Editor | Deskripsi lengkap dengan formatting. |
+
+### Section: Media
+
+| Field | Tipe | Keterangan |
+| --- | --- | --- |
+| `cover` | Image Upload | Cover image utama. Disk: `public`. Max 2 MB. |
+| `gallery` | Image Upload (multiple) | Galeri gambar tambahan dengan grid layout. Disk: `public`. Max 2 MB per file. |
+
+### Section: Availability
+
+| Field | Tipe | Keterangan |
+| --- | --- | --- |
+| `is_published` | Toggle | Status publikasi. Hanya user dengan permission `Publish:Product` yang bisa mengubah. |
+| `category_id` | Select (relation) | Kategori produk. Bisa create category inline (type: `product`). |
+
+### Section: Price & File
+
+| Field | Tipe | Keterangan |
+| --- | --- | --- |
+| `currency_id` | Select | Mata uang harga. Default: currency yang di-set default. |
+| `price` | Money Input | Harga produk. Prefix mengikuti currency code. |
+| `file` | File Upload | File digital yang didownload pelanggan setelah pembayaran sukses. Disk: `local` (bukan public). |
+
+**Format file yang diterima:**
+
+- `application/pdf`
+- `application/epub+zip`
+- `application/zip` (dan variannya)
+- `application/x-rar-compressed`
+- `application/x-7z-compressed`
+
+<Warning>
+  File digital disimpan di disk `local` (bukan `public`) agar tidak bisa diakses langsung via URL. Download hanya lewat route `/download/{order}/{product}` yang butuh autentikasi.
+</Warning>
+
+### Section: SEO
+
+Menggunakan `SeoSchema` bersama: meta title, meta description, OpenGraph image, dan robots directive. Template default bisa diatur di [SEO Settings](/admin-panel/settings/seo).
+
+## Cara Menambahkan Produk
+
+<Steps>
+  <Step title="Buka Products">
+    Sidebar → **Products** → klik tombol **New Product**.
+  </Step>
+  <Step title="Isi General">
+    Isi title untuk setiap bahasa (Indonesia & Inggris). Slug akan auto-generate.
+  </Step>
+  <Step title="Upload media">
+    Upload cover image dan tambahkan gambar galeri opsional.
+  </Step>
+  <Step title="Set availability">
+    Pilih kategori. Aktifkan **Published** untuk menampilkan di frontend.
+  </Step>
+  <Step title="Set harga & file">
+    Pilih currency, isi harga, dan upload file digital yang akan didownload pelanggan.
+  </Step>
+  <Step title="SEO (opsional)">
+    Override meta title/description jika perlu. Jika kosong, akan pakai template default.
+  </Step>
+  <Step title="Save">
+    Klik **Create** untuk menyimpan.
+  </Step>
+</Steps>
+
+## Relasi Data
+
+- **Category:** `belongsTo` → `Category` (type: `product`).
+- **Currency:** `belongsTo` → `Currency`.
+- **Coupon:** `hasMany` → kupon yang applies to produk ini.
+- **Order Items:** `hasMany` via `OrderItem` (riwayat pembelian).

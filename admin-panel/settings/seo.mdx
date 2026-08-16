@@ -1,0 +1,107 @@
+---
+title: "SEO"
+description: "Template meta title, description, dan OpenGraph image untuk homepage, posts, products, pages, dan categories"
+---
+
+Page **SEO** mengatur template meta tag global untuk setiap tipe konten. Nilai di sini menjadi default yang bisa di-override per record di form masing-masing resource.
+
+**Lokasi:** Sidebar → **Settings** → **SEO**
+
+## Screenshot
+
+<Frame caption="Halaman SEO dengan tab per tipe konten">
+  {/* TODO: masukkan screenshot SEO page */}
+</Frame>
+
+## Tab: Homepage
+
+| Field | Tipe | Keterangan |
+| --- | --- | --- |
+| `homepage_title` | Text (translatable) | Meta title untuk homepage. |
+| `homepage_description` | Textarea (translatable) | Meta description untuk homepage. |
+| `homepage_image` | Text | Path OG image relatif dari `public/`. |
+
+**Variables:** `%site_title%`, `%site_description%`
+
+## Tab: Posts
+
+| Field | Tipe | Keterangan |
+| --- | --- | --- |
+| `post_title` | Text (translatable) | Template meta title untuk semua post. |
+| `post_description` | Textarea (translatable) | Template meta description untuk semua post. |
+| `post_image` | Text | Default OG image untuk post. |
+
+**Variables:** `%title%`, `%excerpt%`, `%description%`, `%author%`, `%category%`, `%published_at%`, `%site_title%`, `%site_description%`
+
+Contoh:
+
+```text
+%title% - %category% | %site_title%
+```
+
+## Tab: Products
+
+| Field | Tipe | Keterangan |
+| --- | --- | --- |
+| `product_title` | Text (translatable) | Template meta title untuk semua produk. |
+| `product_description` | Textarea (translatable) | Template meta description untuk semua produk. |
+| `product_image` | Text | Default OG image untuk produk. |
+
+**Variables:** `%title%`, `%short_description%`, `%description%`, `%category%`, `%site_title%`, `%site_description%`
+
+## Tab: Pages
+
+| Field | Tipe | Keterangan |
+| --- | --- | --- |
+| `page_title` | Text (translatable) | Template meta title untuk semua page statis. |
+| `page_description` | Textarea (translatable) | Template meta description untuk semua page statis. |
+| `page_image` | Text | Default OG image untuk page. |
+
+**Variables:** `%title%`, `%description%`, `%site_title%`, `%site_description%`
+
+## Tab: Categories
+
+| Field | Tipe | Keterangan |
+| --- | --- | --- |
+| `category_title` | Text (translatable) | Template meta title untuk halaman category. |
+| `category_description` | Textarea (translatable) | Template meta description untuk halaman category. |
+
+**Variables:** `%name%`, `%description%`, `%site_title%`, `%site_description%`
+
+## Cara Menggunakan Variable
+
+Gunakan variable di dalam template. Sistem akan replace saat rendering meta tag:
+
+```text
+%title% – %site_title%
+```
+
+→ hasil untuk post berjudul "Panduan JIS" dengan site title "CMS Shop Digital":
+
+```text
+Panduan JIS – CMS Shop Digital
+```
+
+<Tip>
+  Setiap resource (Products, Posts, Pages, Categories) juga punya field SEO override sendiri. Jika field di record diisi, nilai record menang atas template global.
+</Tip>
+
+## Cara Update SEO Template
+
+<Steps>
+  <Step title="Buka SEO">
+    Sidebar → **Settings** → **SEO**.
+  </Step>
+  <Step title="Pilih tab">
+    Pilih tab tipe konten yang ingin diatur (Homepage, Posts, dll).
+  </Step>
+  <Step title="Isi template per bahasa">
+    Isi template dengan campuran teks dan variable `%...%`. Ulangi untuk setiap bahasa aktif.
+  </Step>
+  <Step title="Set OG image default">
+    Isi path image relatif dari `public/` (misal `images/og-post.png`).
+  </Step>
+  <Step title="Save">
+    Klik **Save**. Notifikasi "SEO settings saved successfully" akan muncul.
+  </Step>
+</Steps>

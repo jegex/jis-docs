@@ -1,0 +1,68 @@
+---
+title: "Users"
+description: "Semua user pelanggan dan riwayat order per user"
+---
+
+Resource **Users** mengelola user pelanggan (customer). Mereka bisa login, checkout, dan melihat customer dashboard.
+
+**Lokasi:** Sidebar → **Users**
+
+## Screenshot
+
+<Frame caption="Daftar users">
+  {/* TODO: masukkan screenshot list Users */}
+</Frame>
+
+<Frame caption="Form user + Orders relation manager">
+  {/* TODO: masukkan screenshot form User + Orders */}
+</Frame>
+
+## Struktur Form
+
+### Section: Account
+
+| Field | Tipe | Keterangan |
+| --- | --- | --- |
+| `name` | Text | Nama user. |
+| `email` | Email | Email unik. |
+| `password` | Password (revealable) | Password. Wajib saat create, opsional saat edit (kosongkan = tidak ubah). Min 8 karakter, otomatis di-hash. |
+
+### Section: Preferences
+
+| Field | Tipe | Keterangan |
+| --- | --- | --- |
+| `locale` | Select | Bahasa frontend user. Options: `en`, `id`. Default: `en`. |
+| `admin_locale` | Select | Bahasa admin panel (jika user punya akses admin). Options: `en`, `id`. Default: `en`. |
+| `timezone` | Select (searchable) | Timezone user (dari `DateTimeZone::listIdentifiers()`). Default: `Asia/Jakarta`. |
+
+## Relation Manager: Orders
+
+Di halaman edit user, tersedia **Orders Relation Manager** yang menampilkan semua order user tersebut:
+
+- Order number
+- Total
+- Status
+- Created at
+
+Bisa create order manual atau edit order existing dari sini.
+
+## Cara Menambahkan User Manual
+
+<Steps>
+  <Step title="Buka Users">
+    Sidebar → **Users** → klik **New User**.
+  </Step>
+  <Step title="Isi Account">
+    Isi name, email, dan password.
+  </Step>
+  <Step title="Set Preferences">
+    Pilih locale, admin\_locale (jika perlu), dan timezone.
+  </Step>
+  <Step title="Save">
+    Klik **Create**. User bisa langsung login.
+  </Step>
+</Steps>
+
+<Info>
+  User yang register lewat frontend (register form atau Google OAuth) otomatis dibuat dengan `email_verified_at` sesuai flow verifikasi. User yang dibuat manual dari admin panel juga bisa dianggap sudah verified karena diinput oleh admin.
+</Info>

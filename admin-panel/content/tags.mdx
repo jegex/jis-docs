@@ -1,0 +1,45 @@
+---
+title: "Tags"
+description: "Tag artikel blog untuk pengelompokan tambahan"
+---
+
+Resource **Tags** mengelola tag untuk artikel blog. Berbeda dengan Categories yang hierarchical, Tags bersifat flat dan bisa banyak per post.
+
+**Lokasi:** Sidebar → **Tags**
+
+## Screenshot
+
+<Frame caption="Daftar tags">
+  {/* TODO: masukkan screenshot list Tags */}
+</Frame>
+
+<Frame caption="Form create/edit tag">
+  {/* TODO: masukkan screenshot form Tag */}
+</Frame>
+
+## Struktur Form
+
+### Section: Details
+
+| Field | Tipe | Keterangan |
+| --- | --- | --- |
+| `name` | Text | Nama tag. Auto-generate slug saat blur. |
+| `slug` | Text | URL slug unik. |
+
+## Cara Menambahkan Tag
+
+<Steps>
+  <Step title="Buka Tags">
+    Sidebar → **Tags** → klik **New Tag**.
+  </Step>
+  <Step title="Isi nama">
+    Ketik nama tag. Slug akan otomatis di-generate dari nama.
+  </Step>
+  <Step title="Save">
+    Klik **Create**.
+  </Step>
+</Steps>
+
+<Tip>
+  Tag tidak translatable. Jika perlu tag berbeda per bahasa, buat tag terpisah.
+</Tip>

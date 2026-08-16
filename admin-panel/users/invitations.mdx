@@ -1,0 +1,66 @@
+---
+title: "Invitations"
+description: "Undangan untuk user baru via link set password"
+---
+
+Resource **Invitations** memungkinkan admin mengundang user baru (biasanya untuk role editor/writer) tanpa mengetahui password mereka. User penerima akan menerima email dengan link untuk set password sendiri.
+
+**Lokasi:** Sidebar → **Invitations**
+
+## Screenshot
+
+<Frame caption="Daftar invitations">
+  {/* TODO: masukkan screenshot list Invitations */}
+</Frame>
+
+<Frame caption="Form create invitation">
+  {/* TODO: masukkan screenshot form Invitation */}
+</Frame>
+
+## Struktur Form
+
+| Field | Tipe | Keterangan |
+| --- | --- | --- |
+| `email` | Email | Email tujuan undangan. Harus unik (belum pernah diundang). Validasi format email standar. |
+| `role` | Select | Role yang akan di-assign setelah user selesai set password. Options: `writer`, `editor`. |
+
+## Flow Invitation
+
+<Steps>
+  <Step title="Admin buat invitation">
+    Isi email dan pilih role, klik **Create**.
+  </Step>
+  <Step title="Email terkirim">
+    Sistem otomatis mengirim email berisi link `/invitation/{token}` ke email tersebut (via queue).
+  </Step>
+  <Step title="User klik link">
+    User dibawa ke halaman **Set Password** (Livewire component `SetPassword`).
+  </Step>
+  <Step title="User set password">
+    User isi password dan konfirmasi, submit form.
+  </Step>
+  <Step title="Akun aktif">
+    Akun user dibuat dengan role yang sudah ditentukan. User langsung login dan bisa akses admin panel sesuai role.
+  </Step>
+</Steps>
+
+## Route Terkait
+
+| URL | Keterangan |
+| --- | --- |
+| `/invitation/{token}` | Halaman set password (public, tidak butuh auth). |
+
+## Role yang Tersedia
+
+| Role | Value | Cakupan Akses |
+| --- | --- | --- |
+| Writer | `writer` | Bisa create/edit konten, tidak bisa publish. |
+| Editor | `editor` | Bisa create/edit/publish konten. |
+
+<Info>
+  Untuk role **Super Admin** atau custom role dengan permission luas, gunakan resource [Admins](/admin-panel/users/admins) dan set password manual.
+</Info>
+
+<Warning>
+  Token invitation biasanya punya masa berlaku (expiry). Cek kolom `expires_at` di tabel `invitations` untuk konfigurasi masa berlaku.
+</Warning>

@@ -1,0 +1,128 @@
+---
+title: "Perintah Development"
+description: "Referensi perintah artisan dan tooling yang sering digunakan"
+---
+
+## Development Server
+
+Jalankan development server lengkap dengan queue, log viewer, dan Vite:
+
+```bash
+composer run dev
+```
+
+Perintah ini menjalankan 4 service sekaligus:
+
+- `php artisan serve` (web server di `localhost:8000`)
+- `php artisan queue:listen` (queue worker)
+- `php artisan pail` (real-time log viewer)
+- `npm run dev` (Vite dev server dengan hot reload)
+
+## Queue
+
+```bash
+# Development: proses queue sekali lalu berhenti
+php artisan queue:work --stop-when-empty
+
+# Development: listen queue terus-menerus (auto reload saat kode berubah)
+php artisan queue:listen
+
+# Production: worker terus-menerus
+php artisan queue:work --sleep=3 --tries=3
+```
+
+## Cache Management
+
+```bash
+# Bersihkan semua cache
+php artisan optimize:clear
+
+# Cache untuk production
+php artisan config:cache
+php artisan route:cache
+php artisan event:cache
+php artisan icons:cache
+```
+
+<Info>
+  Setelah menjalankan `config:cache`, perubahan di `.env` tidak akan berlaku sampai cache di-clear ulang.
+</Info>
+
+## Database
+
+```bash
+# Migrasi database
+php artisan migrate
+
+# Migrasi + seed data awal
+php artisan migrate --seed
+
+# Reset database (hapus semua tabel, migrate ulang, seed)
+php artisan migrate:fresh --seed
+
+# Migrasi di production (skip konfirmasi)
+php artisan migrate --force
+```
+
+## Code Formatting
+
+JIS menggunakan **Laravel Pint** untuk auto-format code:
+
+```bash
+vendor/bin/pint --format agent
+```
+
+Konfigurasi Pint ada di `pint.json` di root project.
+
+## Storage Link
+
+```bash
+php artisan storage:link
+```
+
+Membuat symlink dari `public/storage` ke `storage/app/public` agar file yang diupload bisa diakses publik.
+
+## Log Viewer
+
+```bash
+# Real-time log viewer
+php artisan pail
+
+# Tail log manual
+tail -f storage/logs/laravel.log
+```
+
+## Membuat User Admin
+
+Jika belum ada user admin, buat via tinker:
+
+```bash
+php artisan tinker
+```
+
+Di dalam tinker:
+
+```php
+App\Models\User::create([
+    'name' => 'Admin',
+    'email' => 'admin@example.com',
+    'password' => bcrypt('password_kuat'),
+    'email_verified_at' => now(),
+]);
+```
+
+<Warning>
+  Kolom role/admin flag tergantung implementasi di codebase. Cek `App\Models\User` dan Filament resource untuk detailnya.
+</Warning>
+
+## Frontend Build
+
+```bash
+# Development (dengan hot reload)
+npm run dev
+
+# Production build
+npm run build
+```
+
+Output build ada di `public/build/` dan otomatis di-hash untuk cache busting.

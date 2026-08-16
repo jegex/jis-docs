@@ -1,0 +1,59 @@
+---
+title: "Pages"
+description: "Halaman statis (tentang kami, kontak, kebijakan privasi)"
+---
+
+Resource **Pages** mengelola halaman statis yang bisa diakses lewat URL `/{slug}` seperti halaman **Tentang Kami**, **Kontak**, **Kebijakan Privasi**, dan **Syarat & Ketentuan**.
+
+**Lokasi:** Sidebar → **Pages**
+
+## Screenshot
+
+<Frame caption="Daftar pages">
+  {/* TODO: masukkan screenshot list Pages */}
+</Frame>
+
+<Frame caption="Form create/edit page">
+  {/* TODO: masukkan screenshot form Page */}
+</Frame>
+
+## Struktur Form
+
+### Section: Konten (Column Utama)
+
+| Field | Tipe | Keterangan |
+| --- | --- | --- |
+| `title` | Text (translatable) | Judul halaman. Auto-generate slug. |
+| `slug` | Text | URL slug unik. |
+| `content` | Rich Editor | Konten halaman dengan formatting lengkap. |
+
+### Section: Publishing (Sidebar)
+
+| Field | Tipe | Keterangan |
+| --- | --- | --- |
+| `is_published` | Toggle | Status publikasi. Hanya user dengan permission `Publish:Page` yang bisa mengubah. |
+
+### Section: SEO
+
+Menggunakan `SeoSchema` bersama. Template default bisa diatur di [SEO Settings](/admin-panel/settings/seo) tab Pages.
+
+## Cara Menambahkan Page
+
+<Steps>
+  <Step title="Buka Pages">
+    Sidebar → **Pages** → klik **New Page**.
+  </Step>
+  <Step title="Isi title per bahasa">
+    Isi title dan content untuk setiap bahasa yang aktif.
+  </Step>
+  <Step title="Toggle Published">
+    Aktifkan **Published** untuk tampil di frontend.
+  </Step>
+  <Step title="Save">
+    Klik **Create**. Page bisa diakses di `/{slug}` (misal `/tentang-kami`).
+  </Step>
+</Steps>
+
+<Tip>
+  Setelah page dibuat, tambahkan ke menu navigasi via [Menu Items](/admin-panel/content/menu-items) agar mudah diakses pengunjung.
+</Tip>
