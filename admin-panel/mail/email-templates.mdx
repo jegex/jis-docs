@@ -46,6 +46,7 @@ Enum `App\Enums\EmailTemplateType`:
 | Welcome | `welcome` | Setelah user register/verify email. |
 | Order Confirmation | `order_confirmation` | Setelah pembayaran sukses. |
 | Download Link | `download_link` | Setelah pembayaran sukses (link download file digital). |
+| Preorder Release | `preorder_release` | Saat produk preorder di-release via artisan command. |
 | Newsletter | `newsletter` | Manual kirim via [Send Newsletter](/admin-panel/mail/send-newsletter). |
 | Password Reset | `password_reset` | User request reset password. |
 | Email Verification | `email_verification` | Setelah register, untuk verifikasi email. |
@@ -66,6 +67,8 @@ Setiap template type punya set variable sendiri. Contoh umum:
 | `{{verify_url}}` | URL verifikasi email (untuk email\_verification). |
 | `{{invitation_url}}` | URL set password (untuk admin\_invitation). |
 | `{{newsletter_content}}` | Konten newsletter (untuk newsletter). |
+| `{{product_name}}` | Nama produk (untuk preorder\_release). |
+| `{{release_date}}` | Tanggal release produk (untuk preorder\_release). |
 
 <Info>
   Daftar variable lengkap per type ditampilkan otomatis di form saat template type dipilih.
