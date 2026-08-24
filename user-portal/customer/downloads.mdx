@@ -46,7 +46,22 @@ Order::where('user_id', auth()->id())
 - List produk yang dibeli dengan:
   - Cover image
   - Nama produk
-  - Tombol **Download**
+  - Tombol **Download** (jika tersedia)
+  - Badge **Preorder** (jika produk belum dirilis)
+  - Info tanggal release untuk produk preorder
+
+## Preorder Products
+
+Untuk produk dengan status preorder:
+
+- Tombol **Download** tidak aktif sampai produk di-release
+- Badge **Preorder** ditampilkan dengan tanggal release
+- Pesan "Download will be available after release" muncul
+- Setelah release, tombol **Download** akan aktif dan user bisa mendownload file
+
+<Info>
+  Admin bisa melakukan release produk secara manual via `php artisan preorders:release` atau sistem akan otomatis me-release saat tanggal release tiba.
+</Info>
 
 ## Cara Kerja Download
 
