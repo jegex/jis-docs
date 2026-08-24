@@ -92,6 +92,21 @@ php artisan pail
 tail -f storage/logs/laravel.log
 ```
 
+## Preorder Release
+
+```bash
+# Release produk yang sudah melewati release_date
+php artisan preorders:release
+
+# Cek produk yang akan di-release (dry-run)
+php artisan preorders:release --dry-run
+```
+
+Perintah ini:
+1. Mencari produk dengan `release_date` yang sudah lewat
+2. Update `preorder_released_at` di order terkait
+3. Kirim email notifikasi ke customer bahwa produk sudah bisa didownload
+
 ## Membuat User Admin
 
 Jika belum ada user admin, buat via tinker:

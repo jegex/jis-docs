@@ -43,6 +43,7 @@ Form produk dibagi ke dalam beberapa section:
 | --- | --- | --- |
 | `is_published` | Toggle | Status publikasi. Hanya user dengan permission `Publish:Product` yang bisa mengubah. |
 | `category_id` | Select (relation) | Kategori produk. Bisa create category inline (type: `product`). |
+| `release_date` | DateTimePicker | Tanggal rilis produk. NULL = regular, masa depan = preorder, masa lalu = released. |
 
 ### Section: Price & File
 

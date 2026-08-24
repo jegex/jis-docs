@@ -73,6 +73,28 @@ Di halaman detail order, tersedia **Payments Relation Manager** yang menampilkan
   Payment log tidak boleh diedit manual. Data ini terisi otomatis dari webhook `POST /api/payment/callback`.
 </Info>
 
+## Invoice PDF
+
+Setelah pembayaran sukses (`Paid`), sistem otomatis generate invoice PDF dan lampirkan ke email konfirmasi.
+
+### Aksi di Table
+
+| Aksi | Keterangan |
+| --- | --- |
+| Preview Invoice | Buka PDF di modal iframe (generate on-demand jika belum ada). |
+| Download Invoice | Download PDF invoice (generate on-demand jika belum ada). |
+
+### Aksi di Detail Order
+
+| Tombol | Keterangan |
+| --- | --- |
+| Download Invoice | Download PDF invoice. Hanya aktif untuk order `Paid`. |
+| Resend Confirmation | Kirim ulang email konfirmasi dengan lampiran invoice. |
+
+<Info>
+  Invoice PDF tersimpan di Media Library (`invoices` collection) dan tidak bisa dihapus manual dari admin.
+</Info>
+
 ## Cara Kerja Order (Ringkas)
 
 <Steps>
