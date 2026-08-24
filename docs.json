@@ -60,7 +60,8 @@
               "features/overview",
               "features/admin-panel",
               "features/payments",
-              "features/multi-language"
+              "features/multi-language",
+              "features/upgrade-v1.5.0"
             ]
           },
           {

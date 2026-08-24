@@ -1,0 +1,171 @@
+---
+title: "Upgrade to v1.5.0"
+description: "Panduan upgrade dari v1.4.x ke v1.5.0 dengan fitur Auto Invoice & Preorder"
+---
+
+Panduan ini untuk upgrade dari **v1.4.x** ke **v1.5.0** yang membawa fitur baru: Auto Invoice PDF, Product Preorder, dan Email Logs.
+
+## Prerequisites
+
+- PHP >= 8.2
+- Node.js >= 18
+- MySQL >= 8.0
+- Backup database sebelum upgrade
+
+<Warning>
+  Selalu backup database sebelum menjalankan migration. Fitur baru menambah kolom baru ke tabel `products` dan `orders`.
+</Warning>
+
+## Step 1: Backup Database
+
+```bash
+mysqldump -u [username] -p [database_name] > backup_$(date +%Y%m%d).sql
+```
+
+## Step 2: Pull Code
+
+```bash
+git pull origin main
+```
+
+Tag release: `v1.5.0`
+
+## Step 3: Install Dependencies
+
+```bash
+composer install
+npm install
+```
+
+## Step 4: Run Migration
+
+```bash
+php artisan migrate
+```
+
+Migration baru yang akan dijalankan:
+
+| Migration | Tabel | Kolom Baru |
+| --- | --- | --- |
+| `2026_08_24_005520_create_invoices_table` | `invoices` | Tabel baru untuk invoice data |
+| `2026_08_24_155850_create_email_logs_table` | `email_logs` | Tabel baru untuk audit email |
+| `2026_08_24_202836_add_release_date_to_products_table` | `products` | `release_date` (nullable, datetime) |
+| `2026_08_24_203152_add_preorder_released_at_to_orders_table` | `orders` | `preorder_released_at` (nullable, datetime) |
+
+<Info>
+  Semua kolom baru nullable, sehingga tidak ada data existing yang terpengaruh. Tidak perlu running seeder.
+</Info>
+
+## Step 5: Clear Cache
+
+```bash
+php artisan optimize:clear
+php artisan config:cache
+php artisan route:cache
+php artisan event:cache
+```
+
+## Step 6: Build Frontend
+
+```bash
+npm run build
+```
+
+## Step 7: Setup Storage Link (Jika Belum)
+
+```bash
+php artisan storage:link
+```
+
+## Step 8: Verify
+
+```bash
+# Jalankan test
+php artisan test --compact
+
+# Cek route list
+php artisan route:list --name=invoice
+php artisan route:list --name=download
+```
+
+## Fitur Baru v1.5.0
+
+### Auto Invoice PDF
+
+- Invoice PDF otomatis di-generate setelah pembayaran sukses
+- PDF terlampir ke email konfirmasi order
+- Admin bisa preview/download dari halaman Orders
+- Tersimpan di Media Library (`invoices` collection)
+
+### Product Preorder
+
+- Field `release_date` di form produk
+- Jika release_date > now() = produk preorder
+- Customer bisa beli sebelum release, download saat ready
+- Badge "Preorder" di halaman katalog dan detail produk
+- Filter produk berdasarkan status (Regular/Preorder/Released)
+
+### Email Logs
+
+- Audit trail semua email yang terkirim
+- Kolom: `order_id`, `type`, `recipient`, `status`, `sent_at`
+- Tabel `email_logs` untuk monitoring
+
+### Bug Fixes
+
+- Tombol **Resend Confirmation** sekarang bisa diklik berulang kali
+- Email dedup via cache lock mencegah duplicate email
+
+## Troubleshooting
+
+### Migration Error
+
+Jika muncul error `Column already exists`:
+
+```bash
+php artisan migrate:fresh --seed
+```
+
+<Warning>
+  Ini akan menghapus semua data. Hanya gunakan di development.
+</Warning>
+
+### Invoice PDF Tidak Muncul
+
+Pastikan dompdf sudah terinstall:
+
+```bash
+composer show barryvdh/laravel-dompdf
+```
+
+Jika belum install:
+
+```bash
+composer require barryvdh/laravel-dompdf
+```
+
+### Preorder Email Tidak Terkirim
+
+Cek apakah ada template `preorder_release` yang aktif:
+
+```bash
+php artisan tinker --execute 'App\Models\EmailTemplate::where("type", "preorder_release')->where("is_active", true)->count();'
+```
+
+Jika 0, buat template baru via **Mail → Email Templates**.
+
+## Rollback
+
+Jika perlu rollback ke v1.4.x:
+
+```bash
+git checkout v1.4.5
+php artisan migrate:rollback
+composer install
+npm run build
+php artisan optimize:clear
+```
+
+<Warning>
+  Rollback migration akan menghapus kolom baru. Pastikan tidak ada data penting di kolom `release_date` dan `preorder_released_at`.
+</Warning>
