@@ -1,55 +1,76 @@
-# Mintlify Starter Kit
+# JIS Documentation
 
-Use the starter kit to get your docs deployed and ready to customize.
+Dokumentasi resmi untuk [JIS](https://github.com/jegex/jis) — CMS & Toko Digital berbasis Laravel.
 
-Click the green **Use this template** button at the top of this repo to copy the Mintlify starter kit. The starter kit contains examples with
+## Tentang
 
-- Guide pages
-- Navigation
-- Customizations
-- API reference pages
-- Use of popular components
+Repo ini berisi source code dokumentasi JIS yang dibangun dengan [Mintlify](https://mintlify.com). Dokumentasi mencakup:
 
-**[Follow the full quickstart guide](https://starter.mintlify.com/quickstart)**
+- **Setup** — instalasi, konfigurasi, deployment
+- **Admin Guide** — panduan menggunakan panel admin (Filament v5)
+- **User Guide** — pandangan dari sisi pelanggan (checkout, download, profil)
+- **Developer** — development workflow, testing, commands
+- **Reference** — enums, environment variables, API, permissions
 
-## AI-assisted writing
-
-Set up your AI coding tool to work with Mintlify:
+## Lokal Development
 
 ```bash
-npx skills add https://mintlify.com/docs
-```
-
-This command installs Mintlify's documentation skill for your configured AI tools like Claude Code, Cursor, Windsurf, and others. The skill includes component reference, writing standards, and workflow guidance.
-
-See the [AI tools guides](/ai-tools) for tool-specific setup.
-
-## Development
-
-Install the [Mintlify CLI](https://www.npmjs.com/package/mint) to preview your documentation changes locally. To install, use the following command:
-
-```
+# Install Mintlify CLI
 npm i -g mint
-```
 
-Run the following command at the root of your documentation, where your `docs.json` is located:
-
-```
+# Jalankan dev server
 mint dev
+
+# Buka http://localhost:3000
 ```
 
-View your local preview at `http://localhost:3000`.
+## Struktur Folder
 
-## Publishing changes
+```text
+jis-docs/
+├── docs.json              # Navigasi & konfigurasi site
+├── index.mdx              # Homepage
+├── quickstart.mdx         # Quick start guide
+├── changelog.mdx          # Changelog
+├── admin-panel/           # Panduan admin panel
+│   ├── overview.mdx
+│   ├── ecommerce/         # Products, orders, coupons
+│   ├── content/           # Posts, categories, tags, pages
+│   ├── users/             # User management
+│   ├── mail/              # Email templates, logs, newsletter
+│   ├── settings/          # Site settings, SEO
+│   ├── projects.mdx
+│   └── homepage-builder.mdx
+├── user-portal/           # Panduan user/customer
+│   ├── overview.mdx
+│   ├── public/            # Homepage, catalog, blog
+│   ├── auth/              # Login, register, 2FA, passkeys
+│   ├── checkout/          # Checkout, payment result
+│   └── customer/          # Dashboard, downloads, profile
+├── configuration/         # Konfigurasi aplikasi
+├── deployment/            # Deployment guides
+├── development/           # Developer docs (testing, commands)
+├── reference/             # Enums, env vars, API, permissions
+└── seo/                   # Sitemap, meta tags
+```
 
-Install our GitHub app from your [dashboard](https://dashboard.mintlify.com/settings/organization/github-app) to propagate changes from your repo to your deployment. Changes are deployed to production automatically after pushing to the default branch.
+## Menambah Halaman Baru
 
-## Need help?
+1. Buat file `.mdx` di folder yang sesuai
+2. Tambahkan entry ke `docs.json` di posisi navigasi yang tepat
+3. Pastikan path di `docs.json` cocok dengan lokasi file (tanpa ekstensi `.mdx`)
 
-### Troubleshooting
+## Validasi
 
-- If your dev environment isn't running: Run `mint update` to ensure you have the most recent version of the CLI.
-- If a page loads as a 404: Make sure you are running in a folder with a valid `docs.json`.
+Pastikan:
+- Setiap entry di `docs.json` punya file `.mdx` yang valid
+- Tidak ada duplicate navigation entry
+- Internal links menggunakan path yang benar (contoh: `/features/payments`)
 
-### Resources
-- [Mintlify documentation](https://mintlify.com/docs)
+## Deploy
+
+Dokumentasi otomatis ter-deploy ke production setelah push ke branch default melalui GitHub App Mintlify.
+
+## Source Code Aplikasi
+
+Source code JIS ada di repo terpisah: [jegex/jis](https://github.com/jegex/jis)

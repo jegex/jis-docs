@@ -1,0 +1,89 @@
+---
+title: "Passkeys & 2FA"
+description: "Autentikasi dua faktor dan passkeys untuk keamanan akun"
+---
+
+JIS mendukung **Two-Factor Authentication (2FA)** via TOTP dan **Passkeys** (WebAuthn) sebagai lapisan keamanan tambahan untuk akun user.
+
+## Two-Factor Authentication (2FA)
+
+2FA menggunakan protokol **TOTP** (Time-based One-Time Password) yang kompatibel dengan aplikasi authenticator seperti Google Authenticator, Authy, atau 1Password.
+
+### Cara Aktifkan
+
+<Steps>
+  <Step title="Buka Profile">
+    Login ke akun, buka halaman **Profile**.
+  </Step>
+  <Step title="Aktifkan 2FA">
+    Klik tombol **Enable Two-Factor Authentication**. QR Code akan ditampilkan.
+  </Step>
+  <Step title="Scan QR Code">
+    Buka aplikasi authenticator di HP, scan QR Code yang ditampilkan.
+  </Step>
+  <Step title="Verifikasi">
+    Masukkan 6-digit kode dari aplikasi authenticator untuk konfirmasi.
+  </Step>
+</Steps>
+
+### Recovery Codes
+
+Setelah mengaktifkan 2FA, sistem akan memberikan **recovery codes**. Simpan kode-kode ini di tempat yang aman. Recovery codes bisa digunakan untuk login jika kehilangan akses ke aplikasi authenticator.
+
+<Warning>
+  Setiap recovery code hanya bisa digunakan sekali. Setelah menggunakan recovery code, kode tersebut tidak bisa digunakan lagi.
+</Warning>
+
+## Passkeys (WebAuthn)
+
+Passkeys adalah metode login tanpa password menggunakan biometrik (fingerprint, face recognition) atau hardware security key.
+
+### Cara Aktifkan
+
+<Steps>
+  <Step title="Buka Profile">
+    Login ke akun, buka halaman **Profile**.
+  </Step>
+  <Step title="Tambah Passkey">
+    Klik **Add Passkey**. Browser akan meminta konfirmasi biometrik atau PIN.
+  </Step>
+  <Step title="Konfirmasi">
+    Ikuti instruksi browser untuk mendaftarkan passkey.
+  </Step>
+</Steps>
+
+### Login dengan Passkey
+
+<Steps>
+  <Step title="Buka halaman login">
+    Klik **Login with Passkey** di halaman login.
+  </Step>
+  <Step title="Autentikasi">
+    Browser akan meminta biometrik atau PIN untuk autentikasi.
+  </Step>
+</Steps>
+
+<Info>
+  Passkeys disimpan sebagai public key di server. Tidak ada password atau private key yang disimpan. Ini membuat passkeys sangat aman karena tidak bisa di-phishing.
+</Info>
+
+## Konfigurasi
+
+Fitur 2FA dan Passkeys dikonfigurasi melalui **Laravel Fortify**. Pastikan fitur ini diaktifkan di `config/fortify.php`:
+
+```php
+'features' => [
+    Features::registration(),
+    Features::login(),
+    Features::emailVerification(),
+    Features::resetPasswords(),
+    Features::twoFactorAuthentication([
+        'confirm' => true,
+    ]),
+    Features::passwordReset(),
+],
+```
+
+<Warning>
+  Fitur 2FA dan Passkeys memerlukan tabel `two_factor_methods`, `recovery_codes`, dan `passkeys` yang sudah di-migrasi otomatis.
+</Warning>

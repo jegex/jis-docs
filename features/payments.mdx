@@ -58,9 +58,12 @@ JIS menggunakan **Midtrans Snap** untuk memproses pembayaran. Berikut alur lengk
 | Status | Keterangan |
 | --- | --- |
 | `pending` | Order dibuat, menunggu pembayaran |
+| `creating_payment` | Sedang proses membuat payment di Midtrans |
+| `awaiting_payment` | Payment link sudah dibuat, menunggu user membayar |
 | `paid` | Pembayaran sukses, file digital bisa didownload |
-| `failed` | Pembayaran gagal atau expired |
-| `cancelled` | Order dibatalkan oleh user atau admin |
+| `failed` | Pembayaran gagal |
+| `expired` | Order kedaluwarsa (lewat 2 jam tanpa pembayaran) |
+| `refunded` | Pembayaran direfund oleh admin |
 
 ## Multi-Currency
 

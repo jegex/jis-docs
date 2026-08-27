@@ -1,0 +1,105 @@
+---
+title: "Changelog"
+description: "Riwayat perubahan dan rilis versi JIS"
+---
+
+Daftar perubahan signifikan di setiap rilis JIS.
+
+## v1.5.1
+
+**Tanggal:** 27 Agustus 2026
+
+### Bug Fixes
+
+- Perbaikan email preorder: sembunyikan tombol download untuk preorder, tampilkan info kapan download tersedia
+- Tambah template email `PreorderRelease` (bilingual en/id)
+- Schedule `preorders:release` otomatis tiap jam
+- Perbaiki `is_published` toggle selalu reset ke false saat edit produk/post/page
+
+### Improvements
+
+- Tambah tombol filter "Released" di halaman katalog produk
+- Customer downloads tampilkan badge "Pending Release" untuk preorder
+- Release preorder sekarang handle semua item dalam order (bukan hanya item pertama)
+- Update variabel email template info panel di admin
+
+### Maintenance
+
+- Hapus `is_published` dari `$hidden` di model Product, Post, Page
+- Tambah `*.zip` ke `.gitignore`
+
+---
+
+## v1.5.0
+
+**Tanggal:** 24 Agustus 2026
+
+### New Features
+
+- **Auto Invoice PDF**: Invoice PDF otomatis di-generate setelah pembayaran, terlampir di email konfirmasi
+- **Product Preorder**: Produk bisa dibeli sebelum release date, download saat ready
+- **Email Logs**: Audit trail semua email yang terkirim
+
+### Improvements
+
+- Tombol **Resend Confirmation** bisa diklik berulang kali
+- Email dedup via cache lock mencegah duplicate email
+- Badge "Preorder" di katalog dan detail produk
+- Filter produk berdasarkan status (Regular/Preorder/Released)
+
+### Bug Fixes
+
+- Perbaikan SEO fallback default og\_default
+- Perbaikan gate untuk super\_admin
+- Perbaikan style CSS button card
+
+---
+
+## v1.4.3
+
+**Tanggal:** 20 Agustus 2026
+
+### Bug Fixes
+
+- Perbaikan MoneyInput stripCharacters
+- Perbaikan style CSS button card
+
+---
+
+## v1.4.2
+
+**Tanggal:** 15 Agustus 2026
+
+### Improvements
+
+- Multi-currency support dengan nilai tukar dinamis
+- Checkout form dengan integrasi Midtrans Snap
+
+---
+
+## v1.4.1
+
+**Tanggal:** 10 Agustus 2026
+
+### Bug Fixes
+
+- Perbaikan route localization
+- Perbaikan admin permission guard
+
+---
+
+## v1.4.0
+
+**Tanggal:** 5 Agustus 2026
+
+### New Features
+
+- Homepage Builder dengan blok dinamis
+- Menu Builder dengan drag & drop
+- Portfolio Proyek dengan filter tipe
+
+### Improvements
+
+- Multi-language support (EN/ID)
+- Google OAuth login
+- Coupon/diskon system

@@ -1,0 +1,43 @@
+---
+title: "Email Logs"
+description: "Audit trail semua email transaksional yang terkirim"
+---
+
+JIS mencatat setiap email yang dikirim melalui sistem ke tabel `email_logs`. Ini berguna untuk debugging dan audit trail.
+
+## Field yang Tercatat
+
+| Field | Keterangan |
+| --- | --- |
+| `order_id` | ID order terkait (nullable untuk email non-order) |
+| `type` | Tipe email (order\_confirmation, download\_link, preorder\_release, dll) |
+| `recipient` | Alamat email penerima |
+| `subject` | Subject email yang terkirim |
+| `sent_at` | Waktu email dikirim |
+
+## Tipe Email
+
+| Tipe | Trigger |
+| --- | --- |
+| `order_confirmation` | Pembayaran sukses |
+| `download_link` | Link download produk |
+| `preorder_release` | Produk preorder sudah tersedia |
+| `welcome` | User baru register |
+| `password_reset` | User minta reset password |
+| `email_verification` | User minta verifikasi email |
+| `newsletter` | Newsletter massal dari admin |
+| `admin_invitation` | Admin mengundang admin baru |
+
+<Info>
+  Email logs hanya mencatat email yang berhasil dikirim melalui `EmailService`. Email yang gagal (template tidak aktif, recipient null) tidak tercatat.
+</Info>
+
+## Query Log via Tinker
+
+```bash
+# Lihat 10 email terakhir
+php artisan tinker --execute 'App\Models\EmailLog::latest()->take(10)->get()->toArray();'
+
+# Hitung email per tipe
+php artisan tinker --execute 'App\Models\EmailLog::select("type", \DB::raw("count(*) as total"))->groupBy("type")->get()->toArray();'
+```

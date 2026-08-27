@@ -8,23 +8,23 @@ User Portal adalah bagian frontend aplikasi JIS yang diakses langsung oleh pengu
 ## Halaman Publik
 
 <CardGroup cols={2}>
-  <Card title="Homepage" icon="house" href="/user-portal/homepage">
+  <Card title="Homepage" icon="house" href="/user-portal/public/homepage">
     Landing page dinamis dengan blok yang bisa dikustomisasi.
   </Card>
 
-  <Card title="Product Catalog" icon="grid" href="/user-portal/product-catalog">
+  <Card title="Product Catalog" icon="grid" href="/user-portal/public/product-catalog">
     Katalog produk dengan filter kategori dan pencarian.
   </Card>
 
-  <Card title="Product Detail" icon="box-open" href="/user-portal/product-detail">
+  <Card title="Product Detail" icon="box-open" href="/user-portal/public/product-detail">
     Detail produk dengan galeri, deskripsi, dan tombol beli.
   </Card>
 
-  <Card title="Blog" icon="newspaper" href="/user-portal/blog">
+  <Card title="Blog" icon="newspaper" href="/user-portal/public/blog">
     Daftar artikel dan halaman detail post.
   </Card>
 
-  <Card title="Static Pages" icon="file-lines" href="/user-portal/static-pages">
+  <Card title="Static Pages" icon="file-lines" href="/user-portal/public/static-pages">
     Halaman statis (tentang kami, kontak, kebijakan).
   </Card>
 </CardGroup>
@@ -32,11 +32,11 @@ User Portal adalah bagian frontend aplikasi JIS yang diakses langsung oleh pengu
 ## Authentication
 
 <CardGroup cols={2}>
-  <Card title="Login & Register" icon="right-to-bracket" href="/user-portal/authentication">
+  <Card title="Login & Register" icon="right-to-bracket" href="/user-portal/auth/authentication">
     Login manual, register, dan Google OAuth.
   </Card>
 
-  <Card title="Set Password (Invitation)" icon="key" href="/user-portal/set-password">
+  <Card title="Set Password (Invitation)" icon="key" href="/user-portal/auth/set-password">
     Halaman set password untuk user yang diundang admin.
   </Card>
 </CardGroup>
@@ -44,11 +44,11 @@ User Portal adalah bagian frontend aplikasi JIS yang diakses langsung oleh pengu
 ## Checkout & Payment
 
 <CardGroup cols={2}>
-  <Card title="Checkout" icon="credit-card" href="/user-portal/checkout">
+  <Card title="Checkout" icon="credit-card" href="/user-portal/checkout/checkout">
     Form checkout dengan kupon dan integrasi Midtrans Snap.
   </Card>
 
-  <Card title="Payment Result" icon="receipt" href="/user-portal/payment-result">
+  <Card title="Payment Result" icon="receipt" href="/user-portal/checkout/payment-result">
     Halaman success, pending, dan error setelah pembayaran.
   </Card>
 </CardGroup>
@@ -58,19 +58,19 @@ User Portal adalah bagian frontend aplikasi JIS yang diakses langsung oleh pengu
 Halaman berikut hanya bisa diakses user yang sudah **login dan verified**.
 
 <CardGroup cols={2}>
-  <Card title="Dashboard" icon="gauge" href="/user-portal/customer-dashboard">
+  <Card title="Dashboard" icon="gauge" href="/user-portal/customer/dashboard">
     Ringkasan order pelanggan.
   </Card>
 
-  <Card title="Downloads" icon="cloud-arrow-down" href="/user-portal/customer-downloads">
+  <Card title="Downloads" icon="cloud-arrow-down" href="/user-portal/customer/downloads">
     Daftar file digital yang bisa didownload.
   </Card>
 
-  <Card title="Order Detail" icon="clipboard-list" href="/user-portal/order-detail">
+  <Card title="Order Detail" icon="clipboard-list" href="/user-portal/customer/order-detail">
     Detail per order dengan riwayat pembayaran.
   </Card>
 
-  <Card title="Profile" icon="user-pen" href="/user-portal/profile">
+  <Card title="Profile" icon="user-pen" href="/user-portal/customer/profile">
     Edit profil dan ganti password.
   </Card>
 </CardGroup>
@@ -82,7 +82,7 @@ Halaman berikut hanya bisa diakses user yang sudah **login dan verified**.
     Switch bahasa via URL prefix atau dropdown.
   </Card>
 
-  <Card title="Currency Switcher" icon="coins" href="/user-portal/currency-switcher">
+  <Card title="Currency Switcher" icon="coins" href="/user-portal/public/currency-switcher">
     Ganti mata uang untuk display harga.
   </Card>
 </CardGroup>

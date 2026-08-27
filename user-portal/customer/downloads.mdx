@@ -83,12 +83,13 @@ Untuk produk dengan status preorder:
 ## Keamanan
 
 - Route butuh `auth` middleware.
-- Validasi `order.user_id === auth()->id()`.
-- Validasi `order.status === paid`.
+- Controller memvalidasi **dua hal**: (1) signed URL signature valid atau user adalah pemilik order, dan (2) order memenuhi syarat download via `canDownload()`.
+- Jika signature tidak valid **dan** user bukan pemilik → `401 Unauthorized`.
+- Jika signature valid atau user pemilik, tetapi `canDownload()` gagal (status bukan `paid`, produk belum dirilis, dll) → `403 Forbidden`.
 - File disimpan di disk `local` (bukan `public`), tidak bisa diakses langsung lewat URL.
 
 <Warning>
-  Jika user membuka URL download milik user lain, controller return 404. Tidak ada cara mendapatkan file yang bukan milik user.
+  Signed download URL dapat diakses tanpa login selama signature masih valid (24 jam). Untuk keamanan tambahan, gunakan signed URL yang pendek atau tambahkan validasi ownership di level aplikasi.
 </Warning>
 
 <Tip>

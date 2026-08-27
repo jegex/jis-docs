@@ -82,9 +82,16 @@ Setiap test dijalankan dalam database in-memory yang di-reset per test class.
 Untuk CI/CD (GitHub Actions, GitLab CI), jalankan:
 
 ```bash
-composer install --optimize-autoloader --no-dev
+# Install semua dependency (termasuk dev dependencies untuk testing)
+composer install
+
+# Jalankan test suite
 composer run test
 ```
+
+<Warning>
+  Jangan gunakan `--no-dev` untuk CI testing. Pest dan PHPUnit berada di `require-dev` sehingga test tidak bisa dijalankan tanpa dev dependencies. Gunakan `--no-dev` hanya untuk deployment production.
+</Warning>
 
 <Tip>
   Jalankan `vendor/bin/pint --format agent` sebelum commit untuk memastikan code formatting konsisten dengan seluruh codebase.

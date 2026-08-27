@@ -1,0 +1,43 @@
+---
+title: "Sitemap"
+description: "Sitemap.xml otomatis untuk SEO"
+---
+
+JIS menghasilkan sitemap.xml secara otomatis menggunakan paket `spatie/laravel-sitemap`. Sitemap membantu search engine mengindeks semua halaman di situs Anda.
+
+## URL Sitemap
+
+```
+GET /sitemap.xml
+```
+
+Sitemap di-generate secara dinamis dan mencakup:
+
+| Tipe URL | Deskripsi |
+| --- | --- |
+| Homepage | Halaman utama |
+| Products | Semua produk yang dipublish |
+| Posts | Semua artikel blog yang dipublish |
+| Pages | Halaman statis (tentang kami, kontak, dll) |
+| Categories | Kategori produk dan blog |
+
+## Konfigurasi
+
+Konfigurasi sitemap ada di `config/sitemap.php`. Anda bisa menyesuaikan:
+
+- **Cron schedule**: Kapan sitemap di-generate ulang
+- **Exclude URLs**: URL yang tidak mau disertakan
+- **Priority**: Prioritas setiap tipe halaman
+- **Change frequency**: Seberapa sering halaman berubah
+
+## Submit ke Google Search Console
+
+Setelah deployment, submit sitemap URL ke Google Search Console:
+
+```
+https://domain-anda.com/sitemap.xml
+```
+
+<Info>
+  Sitemap di-cache untuk performa. Setelah membuat atau menghapus produk/post, cache akan di-clear otomatis.
+</Info>

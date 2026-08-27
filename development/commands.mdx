@@ -97,15 +97,29 @@ tail -f storage/logs/laravel.log
 ```bash
 # Release produk yang sudah melewati release_date
 php artisan preorders:release
-
-# Cek produk yang akan di-release (dry-run)
-php artisan preorders:release --dry-run
 ```
 
 Perintah ini:
-1. Mencari produk dengan `release_date` yang sudah lewat
-2. Update `preorder_released_at` di order terkait
-3. Kirim email notifikasi ke customer bahwa produk sudah bisa didownload
+1. Mencari order dengan status `paid` yang belum di-release
+2. Filter produk dengan `release_date` yang sudah lewat
+3. Update `preorder_released_at` di order terkait
+4. Kirim email notifikasi ke customer bahwa produk sudah bisa didownload
+
+<Info>
+  Perintah ini dijadwalkan otomatis tiap jam melalui scheduler. Jalankan manual hanya jika perlu release segera.
+</Info>
+
+## Backfill Invoice
+
+```bash
+# Cek order yang akan di-backfill (dry-run)
+php artisan invoices:backfill --dry-run
+
+# Jalankan backfill
+php artisan invoices:backfill
+```
+
+Perintah ini generate invoice PDF untuk order yang sudah `paid` tapi belum punya invoice.
 
 ## Membuat User Admin
 
